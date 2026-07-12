@@ -62,12 +62,14 @@
     background:var(--paper); color:var(--ink); outline:none; transition:border-color .15s;
   }
   .field input:focus, .field select:focus{border-color:var(--brand);}
+  .field input:disabled{opacity:.6;}
   .btn{
     display:inline-flex; align-items:center; justify-content:center; gap:8px;
     padding:11px 18px; border-radius:9px; border:1px solid transparent; font-weight:600; font-size:14px;
     transition:transform .08s ease, filter .15s ease;
   }
   .btn:active{transform:translateY(1px);}
+  .btn:disabled{opacity:.55; cursor:default; transform:none;}
   .btn-primary{background:var(--brand); color:#fff; width:100%;}
   .btn-primary:hover{filter:brightness(1.08);}
   .btn-ghost{background:transparent; border-color:var(--border); color:var(--ink);}
@@ -96,11 +98,11 @@
   }
   .nav-btn:hover{background:rgba(255,255,255,0.06); color:#fff;}
   .nav-btn.active{background:var(--brand); color:#fff;}
-  .nav-btn.ghost{margin-top:auto; color:#9CA79E; border:1px solid rgba(255,255,255,0.12);}
+  .nav-btn.ghost{color:#9CA79E; border:1px solid rgba(255,255,255,0.12);}
   .sidebar-bottom{margin-top:auto; display:flex; flex-direction:column; gap:4px;}
 
   .content{flex:1; padding:28px 32px 100px; max-width:1100px;}
-  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; gap:12px; flex-wrap:wrap;}
   .topbar h2{font-size:24px;}
   #syncStatus{font-size:12px; color:var(--ink-soft); display:flex; align-items:center; gap:6px;}
   #syncStatus .dot{width:7px; height:7px; border-radius:50%; background:var(--good); display:inline-block;}
@@ -118,6 +120,12 @@
   .grid-3{display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:10px; align-items:end;}
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
 
+  /* segmented toggle (ingrediente vs produto) */
+  .segmented{display:inline-flex; border:1px solid var(--border); border-radius:9px; overflow:hidden; margin-bottom:16px;}
+  .seg-btn{background:var(--paper); border:none; padding:9px 14px; font-size:13px; font-weight:600; color:var(--ink-soft);}
+  .seg-btn.active{background:var(--brand); color:#fff;}
+  .seg-btn + .seg-btn{border-left:1px solid var(--border);}
+
   /* pending ingredient list (cadastro) */
   .pending-list{list-style:none; margin:14px 0 0; padding:0; border-top:1px dashed var(--border);}
   .pending-list li{
@@ -129,6 +137,7 @@
   .pending-list .pi-right{display:flex; align-items:center; gap:12px;}
   .x-btn{background:none; border:none; color:var(--danger); font-size:16px; line-height:1; padding:4px;}
   .empty-note{color:var(--ink-soft); font-size:13px; padding:14px 2px;}
+  .tag-sub{display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--brand-dark); background:var(--brand-soft); padding:2px 6px; border-radius:5px; margin-left:6px;}
 
   /* Dados table */
   table.data-table{width:100%; border-collapse:collapse; font-size:14px;}
@@ -141,6 +150,9 @@
     width:100%; padding:7px 8px; border:1px solid var(--border); border-radius:7px; background:var(--paper); font-size:13px;
   }
   .col-actions{white-space:nowrap; text-align:right;}
+  .role-badge{padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700;}
+  .role-badge.admin{background:var(--warn-soft); color:#7A4E1B;}
+  .role-badge.usuario{background:#EDEBDE; color:var(--ink-soft);}
 
   /* Dashboard receipt cards */
   .receipt{
@@ -177,6 +189,14 @@
 
   .receipt-body{display:none; padding:0 20px 20px; border-top:1px dashed var(--border);}
   .receipt.open .receipt-body{display:block;}
+
+  .yield-panel{display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap; padding:16px 0; border-bottom:1px dashed var(--border);}
+  .yield-panel .field-inline{display:flex; flex-direction:column; gap:4px;}
+  .yield-panel .field-inline label{font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);}
+  .yield-panel .field-inline input{width:100px; padding:6px 8px; border:1px solid var(--border); border-radius:7px; font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--paper);}
+  .yield-cost{margin-left:auto; font-size:13px; color:var(--ink-soft);}
+  .yield-cost strong{color:var(--brand-dark); font-family:'IBM Plex Mono',monospace;}
+
   .item-row{
     display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed var(--border); font-size:13px;
   }
@@ -186,12 +206,13 @@
   .item-row .it-qty{width:80px;}
   .item-row .it-qty input{width:100%; padding:6px 6px; border:1px solid var(--border); border-radius:6px; font-family:'IBM Plex Mono',monospace; font-size:13px; text-align:right; background:var(--paper);}
   .item-row .it-cost{width:90px; text-align:right; font-family:'IBM Plex Mono',monospace;}
-  .item-row .it-pct{width:60px; text-align:right; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; font-size:12px;}
   .pct-bar-wrap{height:4px; background:var(--border); border-radius:2px; margin-top:4px; overflow:hidden;}
   .pct-bar{height:100%; background:var(--brand);}
   .receipt-foot{display:flex; justify-content:space-between; align-items:center; padding-top:14px;}
-  .add-item-form{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+  .add-item-form{margin-top:14px;}
+  .add-item-form .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
   .add-item-form input, .add-item-form select{padding:7px 8px; border:1px solid var(--border); border-radius:7px; font-size:13px; background:var(--paper);}
+  .preview-note{font-size:11px; color:var(--ink-soft); margin-top:6px;}
 
   /* Toast & modal */
   .toast{
@@ -236,6 +257,7 @@
     .grid-3 > *:last-child{grid-column:1 / -1;}
     .receipt-head{flex-wrap:wrap;}
     .rh-num{order:3; width:50%;}
+    .yield-cost{margin-left:0; width:100%;}
   }
 </style>
 </head>
@@ -248,16 +270,16 @@
       <p class="tag">Custo de Mercadoria Vendida — calculadora conectada à sua planilha</p>
       <div id="loginBanner" class="banner hidden"></div>
       <div class="field">
-        <label for="loginEmail">Seu e-mail</label>
+        <label for="loginEmail">E-mail</label>
         <input id="loginEmail" type="email" placeholder="voce@empresa.com.br" autocomplete="username">
       </div>
       <div class="field">
-        <label for="loginCode">Código de acesso</label>
-        <input id="loginCode" type="password" placeholder="••••••••" autocomplete="current-password">
+        <label for="loginSenha">Senha</label>
+        <input id="loginSenha" type="password" placeholder="••••••••" autocomplete="current-password">
       </div>
       <button class="btn btn-primary" id="btnLogin">Entrar</button>
       <button class="btn btn-ghost" id="btnOpenConfigFromLogin" style="width:100%; margin-top:8px;">⚙ Configurar API</button>
-      <p class="hint">Este login é local e simples — pensado para uso individual enquanto você valida o app. A lógica de autenticação fica isolada em um único módulo (<code>AuthService</code>) no código, pronta para ser trocada por um provedor real (ex: Supabase Auth) sem mexer no resto do app.</p>
+      <p class="hint">O login agora é multiusuário: cada pessoa tem seu próprio e-mail e senha, cadastrados por um administrador dentro do app (aba "Usuários"). As senhas ficam com hash na planilha — nunca em texto puro. Módulo isolado em <code>AuthService</code>, pronto para trocar por Supabase Auth no futuro.</p>
     </div>
   </div>
 
@@ -269,6 +291,7 @@
         <button class="nav-btn active" data-tab="cadastro">＋ Cadastro</button>
         <button class="nav-btn" data-tab="dados">▤ Dados</button>
         <button class="nav-btn" data-tab="dashboard">◆ Dashboard</button>
+        <button class="nav-btn hidden" data-tab="usuarios" id="navUsuarios">☺ Usuários</button>
       </nav>
       <div class="sidebar-bottom">
         <button class="nav-btn ghost" id="btnConfig"><span class="icon">⚙</span><span class="btn-label"> Configurar API</span></button>
@@ -289,15 +312,32 @@
       <!-- ---- TAB: CADASTRO ---- -->
       <section id="tab-cadastro" class="tab active">
         <div class="card">
-          <h3>1. Nome do produto</h3>
-          <div class="field" style="margin-bottom:0;">
-            <input id="prodNome" type="text" placeholder="Ex: Bolo de cenoura 1kg">
+          <h3>1. Dados do produto</h3>
+          <div class="grid-3" style="grid-template-columns:2fr 1fr 1fr;">
+            <div class="field" style="margin-bottom:0;">
+              <label>Nome do produto</label>
+              <input id="prodNome" type="text" placeholder="Ex: Bolo de cenoura 1kg">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Rendimento da receita</label>
+              <input id="prodRendimento" type="number" step="0.001" min="0.001" value="1">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Unidade do rendimento</label>
+              <input id="prodUnidadeRendimento" type="text" placeholder="Ex: unidade, kg, fatia" value="unidade">
+            </div>
           </div>
+          <p class="hint" style="margin-top:10px;">Rendimento é quanto essa receita produz — ex: "essa massa de pão rende 8 unidades". Isso é o que permite usar este produto como item dentro de outro (ex: 1 pão dentro de um sanduíche), calculando o custo por unidade automaticamente.</p>
         </div>
 
         <div class="card">
-          <h3>2. Adicionar ingrediente</h3>
-          <div class="grid-3">
+          <h3>2. Adicionar item à receita</h3>
+          <div class="segmented" data-toggle-group="cadastro">
+            <button type="button" class="seg-btn active" data-tipo="ingrediente">Ingrediente</button>
+            <button type="button" class="seg-btn" data-tipo="produto">Produto já cadastrado (sub-receita)</button>
+          </div>
+
+          <div id="cadIngredienteFields" class="grid-3">
             <div class="field" style="margin-bottom:0;">
               <label>Nome do ingrediente</label>
               <input id="ingNome" list="ingredientesDatalist" placeholder="Ex: Farinha de trigo">
@@ -306,14 +346,9 @@
             <div class="field" style="margin-bottom:0;">
               <label>Unidade</label>
               <select id="ingUnidade">
-                <option value="kg">kg</option>
-                <option value="g">g</option>
-                <option value="l">l</option>
-                <option value="ml">ml</option>
-                <option value="unidade">unidade</option>
-                <option value="dz">dúzia</option>
-                <option value="pacote">pacote</option>
-                <option value="caixa">caixa</option>
+                <option value="kg">kg</option><option value="g">g</option><option value="l">l</option>
+                <option value="ml">ml</option><option value="unidade">unidade</option><option value="dz">dúzia</option>
+                <option value="pacote">pacote</option><option value="caixa">caixa</option>
               </select>
             </div>
             <div class="field" style="margin-bottom:0;">
@@ -328,8 +363,21 @@
           </div>
           <p id="ingExistsNote" class="hint hidden">Ingrediente já cadastrado — preço e unidade vêm da aba <strong>Dados</strong>. Para alterar o preço, edite lá (a mudança afeta todos os produtos que o usam).</p>
 
+          <div id="cadProdutoFields" class="grid-3 hidden" style="grid-template-columns:2fr 1fr auto;">
+            <div class="field" style="margin-bottom:0;">
+              <label>Produto</label>
+              <select id="cadProdutoSelect"><option value="">Selecione um produto já cadastrado…</option></select>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Quantidade usada</label>
+              <input id="cadProdutoQtd" type="number" step="0.001" min="0" placeholder="Ex: 1">
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnAddProdutoItem" style="height:41px;">Adicionar</button>
+          </div>
+          <p id="cadProdutoPreview" class="preview-note hidden"></p>
+
           <ul class="pending-list" id="pendingList">
-            <li class="empty-note">Nenhum ingrediente adicionado ainda.</li>
+            <li class="empty-note">Nenhum item adicionado ainda.</li>
           </ul>
         </div>
 
@@ -343,7 +391,7 @@
       <section id="tab-dados" class="tab">
         <div class="card">
           <h3>Ingredientes cadastrados</h3>
-          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Edite o preço aqui sempre que comprar por um valor diferente — o custo de todos os produtos que usam esse ingrediente é recalculado automaticamente.</p>
+          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Edite o preço aqui sempre que comprar por um valor diferente — o custo de todos os produtos que usam esse ingrediente (direta ou indiretamente, via sub-receitas) é recalculado automaticamente.</p>
           <div style="overflow-x:auto;">
           <table class="data-table">
             <thead>
@@ -382,6 +430,41 @@
       <section id="tab-dashboard" class="tab">
         <div id="dashboardList"></div>
       </section>
+
+      <!-- ---- TAB: USUÁRIOS (admin) ---- -->
+      <section id="tab-usuarios" class="tab">
+        <div class="card">
+          <h3>Usuários com acesso ao app</h3>
+          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Só administradores veem esta aba. Cada pessoa deve ter seu próprio e-mail e senha.</p>
+          <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead><tr><th>E-mail</th><th>Papel</th><th class="col-actions">Ações</th></tr></thead>
+            <tbody id="usuariosTableBody"></tbody>
+          </table>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Novo usuário</h3>
+          <div class="grid-3" style="grid-template-columns:2fr 1fr 1fr auto;">
+            <div class="field" style="margin-bottom:0;">
+              <label>E-mail</label>
+              <input id="novoUserEmail" type="email" placeholder="pessoa@empresa.com.br">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Senha</label>
+              <input id="novoUserSenha" type="text" placeholder="mín. 4 caracteres">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Papel</label>
+              <select id="novoUserRole">
+                <option value="usuario">Usuário</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnAddUsuario" style="height:41px;">Adicionar</button>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -389,6 +472,7 @@
     <button data-tab="cadastro" class="active">＋<br>Cadastro</button>
     <button data-tab="dados">▤<br>Dados</button>
     <button data-tab="dashboard">◆<br>Dashboard</button>
+    <button data-tab="usuarios" id="navUsuariosMobile" class="hidden">☺<br>Usuários</button>
   </div>
 
   <div id="toast" class="toast hidden"></div>
@@ -396,7 +480,7 @@
   <div id="configModalOverlay" class="modal-overlay hidden">
     <div class="modal">
       <h3>Configurar planilha</h3>
-      <p>Cole aqui a URL do Google Apps Script publicado como "Aplicativo da Web" (veja o passo a passo no arquivo do script). Fica salva apenas neste navegador.</p>
+      <p>Cole aqui a URL do Google Apps Script publicado como "Aplicativo da Web". Fica salva apenas neste navegador.</p>
       <div class="field">
         <label>URL da API</label>
         <input id="configApiUrl" type="text" placeholder="https://script.google.com/macros/s/.../exec">
@@ -411,50 +495,55 @@
 <script>
 /* =========================================================================
    CONFIG
-   - ACCESS_CODE: código simples de acesso ao app (troque este valor).
-   - API_URL: URL do Google Apps Script, salva em localStorage (é apenas
-     um endereço de configuração, não é dado do negócio — os dados reais
-     de produtos e ingredientes SEMPRE ficam na planilha, nunca no navegador).
+   API_URL é salva em localStorage (é só um endereço de configuração, não é
+   dado do negócio — os dados reais sempre ficam na planilha).
    ========================================================================= */
   const CONFIG = {
-    ACCESS_CODE: 'trocar123',
     get API_URL(){ return localStorage.getItem('cmv_api_url') || ''; },
     set API_URL(v){ localStorage.setItem('cmv_api_url', v); },
-    CMV_LOW_MAX: 30,   // até este % o CMV é considerado bom (badge verde)
-    CMV_MID_MAX: 45    // até este % é atenção (amarelo); acima disso é alerta (vermelho)
+    CMV_LOW_MAX: 30,
+    CMV_MID_MAX: 45
   };
 
 /* =========================================================================
    AUTH SERVICE
-   Módulo isolado de autenticação. Hoje é um login simples (código de acesso
-   fixo), guardado em sessionStorage (não é dado de negócio, é só a sessão
-   do navegador). Quando for migrar para Supabase:
-     1. Troque login()/logout()/getUser()/isLoggedIn() pelas chamadas do
-        supabase.auth (signInWithPassword, signOut, getUser, etc).
-     2. Nenhum outro lugar do app precisa mudar, pois tudo chama AuthService.
+   Módulo isolado de autenticação. Hoje faz login contra a aba "Usuarios" da
+   planilha (via Apps Script), recebendo um token de sessão temporário. Fica
+   guardado em sessionStorage (não é dado de negócio, é só a sessão do
+   navegador). Para migrar para Supabase no futuro: troque os métodos
+   login()/logout()/getUser()/isLoggedIn() pelas chamadas do supabase.auth —
+   nenhum outro lugar do app precisa mudar, pois tudo passa por AuthService.
    ========================================================================= */
   const AuthService = {
     KEY: 'cmv_session',
-    login(email, code){
-      if(!email || !code) return {ok:false, error:'Preencha e-mail e código de acesso.'};
-      if(code !== CONFIG.ACCESS_CODE) return {ok:false, error:'Código de acesso incorreto.'};
-      sessionStorage.setItem(this.KEY, JSON.stringify({email, loggedAt:Date.now()}));
-      return {ok:true};
+    async login(email, senha){
+      const data = await Api.callRaw('login', { email, senha }); // {token, user}
+      sessionStorage.setItem(this.KEY, JSON.stringify(data));
+      return data;
     },
-    logout(){ sessionStorage.removeItem(this.KEY); },
-    getUser(){ const raw = sessionStorage.getItem(this.KEY); return raw ? JSON.parse(raw) : null; },
-    isLoggedIn(){ return !!this.getUser(); }
+    async logout(){
+      const sess = this.getSession();
+      if(sess && sess.token){
+        try{ await Api.callRaw('logout', { token: sess.token }); }catch(e){ /* best-effort */ }
+      }
+      sessionStorage.removeItem(this.KEY);
+    },
+    localLogout(){ sessionStorage.removeItem(this.KEY); },
+    getSession(){ const raw = sessionStorage.getItem(this.KEY); return raw ? JSON.parse(raw) : null; },
+    getUser(){ const s = this.getSession(); return s ? s.user : null; },
+    getToken(){ const s = this.getSession(); return s ? s.token : null; },
+    isLoggedIn(){ return !!this.getSession(); },
+    isAdmin(){ const u = this.getUser(); return !!u && u.role === 'admin'; }
   };
 
 /* =========================================================================
    API — comunicação com o Google Apps Script
-   Usamos POST com Content-Type "text/plain" de propósito: isso faz o
-   navegador tratar a requisição como "simple request" e evita o preflight
-   OPTIONS, que o Apps Script não responde bem. O Apps Script recebe o texto
-   e nós fazemos JSON.parse manualmente do lado de lá.
+   POST com Content-Type "text/plain" evita o preflight OPTIONS (o Apps
+   Script não responde bem a ele). O token de sessão é anexado
+   automaticamente em toda chamada autenticada via Api.call().
    ========================================================================= */
   const Api = {
-    async call(action, payload = {}){
+    async _post(action, payload){
       if(!CONFIG.API_URL){
         throw new Error('Configure a URL da API primeiro (botão "Configurar API").');
       }
@@ -468,15 +557,33 @@
       catch(e){ throw new Error('Resposta inválida da API. Confira se a URL está correta e se o app foi implantado como "Qualquer pessoa".'); }
       if(!json.ok) throw new Error(json.error || 'Erro desconhecido na API.');
       return json.data;
+    },
+    // chamada autenticada: anexa o token de sessão automaticamente
+    async call(action, payload = {}){
+      const token = AuthService.getToken();
+      try{
+        return await this._post(action, { ...payload, token });
+      }catch(err){
+        if(/sess(ã|a)o/i.test(err.message)){
+          AuthService.localLogout();
+          showLogin('Sua sessão expirou. Faça login novamente.');
+        }
+        throw err;
+      }
+    },
+    // chamada sem token (usada só para login/logout)
+    async callRaw(action, payload = {}){
+      return await this._post(action, payload);
     }
   };
 
 /* =========================================================================
    ESTADO
    ========================================================================= */
-  let state = { ingredientes: [], produtos: [], itens: [] };
-  let pendingProduct = { nome: '', itens: [] }; // itens: {ingredienteId?, isNew, nome, unidade, preco, quantidade}
+  let state = { ingredientes: [], produtos: [], itens: [], usuarios: [] };
+  let pendingProduct = { itens: [] }; // itens: {tipoItem, itemId, isNew, nome, unidade, preco, quantidade}
   let openReceipts = new Set();
+  let cadTipoAtual = 'ingrediente';
 
 /* =========================================================================
    HELPERS
@@ -493,16 +600,15 @@
     const alvo = (nome || '').trim().toLowerCase();
     return state.ingredientes.find(i => (i.nome || '').trim().toLowerCase() === alvo);
   }
-  function findIngredienteById(id){
-    return state.ingredientes.find(i => i.id === id);
-  }
+  function findIngredienteById(id){ return state.ingredientes.find(i => i.id === id); }
+  function findProdutoById(id){ return state.produtos.find(p => p.id === id); }
   function toast(msg, isErr){
     const el = document.getElementById('toast');
     el.textContent = msg;
     el.classList.toggle('err', !!isErr);
     el.classList.remove('hidden');
     clearTimeout(toast._t);
-    toast._t = setTimeout(() => el.classList.add('hidden'), 3200);
+    toast._t = setTimeout(() => el.classList.add('hidden'), 3400);
   }
   function setSync(status){
     const el = document.getElementById('syncStatus');
@@ -513,12 +619,72 @@
     else { label.textContent = 'Sincronizado'; }
   }
   function updateApiBanner(){
-    const banner = document.getElementById('apiBanner');
-    banner.classList.toggle('hidden', !!CONFIG.API_URL);
+    document.getElementById('apiBanner').classList.toggle('hidden', !!CONFIG.API_URL);
+  }
+  function escapeHtml(str){
+    return String(str ?? '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
 
 /* =========================================================================
-   CARREGAR DADOS DA PLANILHA
+   CÁLCULO DE CUSTO (recursivo — suporta produto usado como ingrediente)
+   ========================================================================= */
+  // Evita loop infinito caso A use B e B (direta ou indiretamente) use A.
+  function introducesCycle(parentId, candidateId){
+    if(!parentId) return false;
+    if(candidateId === parentId) return true;
+    const visited = new Set();
+    function dfs(pid){
+      if(pid === parentId) return true;
+      if(visited.has(pid)) return false;
+      visited.add(pid);
+      const deps = state.itens.filter(it => it.produtoId === pid && it.tipoItem === 'produto');
+      return deps.some(d => dfs(d.itemId));
+    }
+    return dfs(candidateId);
+  }
+
+  function computeProduto(produto, visiting){
+    visiting = visiting || new Set();
+    if(visiting.has(produto.id)){
+      return { itens: [], custoTotal: 0, cmvPct: null, custoUnitario: 0, cyclic: true };
+    }
+    const nextVisiting = new Set(visiting);
+    nextVisiting.add(produto.id);
+
+    const itens = state.itens.filter(it => it.produtoId === produto.id).map(it => {
+      if(it.tipoItem === 'produto'){
+        const subProduto = findProdutoById(it.itemId);
+        if(!subProduto) return { ...it, nomeExibicao: '(produto removido)', unidadeExibicao: '', custo: 0, isSubProduto: true };
+        const sub = computeProduto(subProduto, nextVisiting);
+        const custoUnitario = sub.custoTotal / (Number(subProduto.rendimento) || 1);
+        const custo = custoUnitario * (Number(it.quantidade) || 0);
+        return { ...it, nomeExibicao: subProduto.nome, unidadeExibicao: subProduto.unidadeRendimento || 'unidade', custoUnitario, custo, isSubProduto: true };
+      } else {
+        const ing = findIngredienteById(it.itemId);
+        const custo = ing ? (Number(ing.preco) || 0) * (Number(it.quantidade) || 0) : 0;
+        return { ...it, nomeExibicao: ing ? ing.nome : '(ingrediente removido)', unidadeExibicao: ing ? ing.unidade : '', custo, isSubProduto: false };
+      }
+    });
+
+    const custoTotal = itens.reduce((acc, it) => acc + it.custo, 0);
+    const precoVenda = Number(produto.precoVenda) || 0;
+    const cmvPct = precoVenda > 0 ? (custoTotal / precoVenda) * 100 : null;
+    const custoUnitario = custoTotal / (Number(produto.rendimento) || 1);
+    return { itens, custoTotal, cmvPct, custoUnitario };
+  }
+
+  function pendingItemCusto(it){
+    if(it.tipoItem === 'produto'){
+      const sub = findProdutoById(it.itemId);
+      if(!sub) return 0;
+      const comp = computeProduto(sub);
+      return comp.custoUnitario * (Number(it.quantidade) || 0);
+    }
+    return (Number(it.preco) || 0) * (Number(it.quantidade) || 0);
+  }
+
+/* =========================================================================
+   CARREGAR DADOS
    ========================================================================= */
   async function loadAll(){
     if(!CONFIG.API_URL){ updateApiBanner(); return; }
@@ -530,10 +696,18 @@
       state.itens = data.itens || [];
       setSync('ok');
       renderAll();
+      if(AuthService.isAdmin()) refreshUsuarios();
     }catch(err){
       setSync('error');
       toast(err.message, true);
     }
+  }
+
+  async function refreshUsuarios(){
+    try{
+      state.usuarios = await Api.call('listUsuarios');
+      renderUsuariosTable();
+    }catch(err){ toast(err.message, true); }
   }
 
   function renderAll(){
@@ -546,9 +720,35 @@
    TAB: CADASTRO
    ========================================================================= */
   function renderIngredientesDatalist(){
-    const dl = document.getElementById('ingredientesDatalist');
-    dl.innerHTML = state.ingredientes.map(i => `<option value="${escapeHtml(i.nome)}">`).join('');
+    document.getElementById('ingredientesDatalist').innerHTML =
+      state.ingredientes.map(i => `<option value="${escapeHtml(i.nome)}">`).join('');
+
+    const select = document.getElementById('cadProdutoSelect');
+    const current = select.value;
+    select.innerHTML = '<option value="">Selecione um produto já cadastrado…</option>' +
+      state.produtos.map(p => `<option value="${p.id}">${escapeHtml(p.nome)}</option>`).join('');
+    select.value = current;
   }
+
+  document.querySelectorAll('[data-toggle-group="cadastro"] .seg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-toggle-group="cadastro"] .seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      cadTipoAtual = btn.dataset.tipo;
+      document.getElementById('cadIngredienteFields').classList.toggle('hidden', cadTipoAtual !== 'ingrediente');
+      document.getElementById('cadProdutoFields').classList.toggle('hidden', cadTipoAtual !== 'produto');
+      document.getElementById('cadProdutoPreview').classList.add('hidden');
+    });
+  });
+
+  document.getElementById('cadProdutoSelect').addEventListener('change', (e) => {
+    const preview = document.getElementById('cadProdutoPreview');
+    const produto = findProdutoById(e.target.value);
+    if(!produto){ preview.classList.add('hidden'); return; }
+    const comp = computeProduto(produto);
+    preview.textContent = `Custo estimado: ${formatBRL(comp.custoUnitario)} por ${produto.unidadeRendimento || 'unidade'}.`;
+    preview.classList.remove('hidden');
+  });
 
   document.getElementById('ingNome').addEventListener('input', (e) => {
     const match = findIngredienteByName(e.target.value);
@@ -580,7 +780,8 @@
 
     const existing = findIngredienteByName(nome);
     pendingProduct.itens.push({
-      ingredienteId: existing ? existing.id : null,
+      tipoItem: 'ingrediente',
+      itemId: existing ? existing.id : null,
       isNew: !existing,
       nome, unidade, preco, quantidade: qtd
     });
@@ -594,24 +795,52 @@
     renderPendingList();
   });
 
+  document.getElementById('btnAddProdutoItem').addEventListener('click', () => {
+    const produtoId = document.getElementById('cadProdutoSelect').value;
+    const qtd = parseFloat(document.getElementById('cadProdutoQtd').value);
+    const produto = findProdutoById(produtoId);
+    if(!produto){ toast('Selecione um produto cadastrado.', true); return; }
+    if(isNaN(qtd) || qtd <= 0){ toast('Informe a quantidade usada.', true); return; }
+
+    pendingProduct.itens.push({
+      tipoItem: 'produto',
+      itemId: produtoId,
+      isNew: false,
+      nome: produto.nome,
+      unidade: produto.unidadeRendimento || 'unidade',
+      quantidade: qtd
+    });
+
+    document.getElementById('cadProdutoSelect').value = '';
+    document.getElementById('cadProdutoQtd').value = '';
+    document.getElementById('cadProdutoPreview').classList.add('hidden');
+    renderPendingList();
+  });
+
   function renderPendingList(){
     const ul = document.getElementById('pendingList');
     if(pendingProduct.itens.length === 0){
-      ul.innerHTML = '<li class="empty-note">Nenhum ingrediente adicionado ainda.</li>';
+      ul.innerHTML = '<li class="empty-note">Nenhum item adicionado ainda.</li>';
       return;
     }
-    ul.innerHTML = pendingProduct.itens.map((it, idx) => `
+    ul.innerHTML = pendingProduct.itens.map((it, idx) => {
+      const custo = pendingItemCusto(it);
+      const subTag = it.tipoItem === 'produto' ? '<span class="tag-sub">sub-receita</span>' : '';
+      const meta = it.tipoItem === 'produto'
+        ? `${it.quantidade} ${escapeHtml(it.unidade)}`
+        : `${it.quantidade} ${escapeHtml(it.unidade)} · ${formatBRL(it.preco)}/${escapeHtml(it.unidade)}${it.isNew ? ' · novo ingrediente' : ''}`;
+      return `
       <li>
         <div>
-          <div class="pi-name">${escapeHtml(it.nome)}</div>
-          <div class="pi-meta">${it.quantidade} ${escapeHtml(it.unidade)} · ${formatBRL(it.preco)}/${escapeHtml(it.unidade)}${it.isNew ? ' · novo ingrediente' : ''}</div>
+          <div class="pi-name">${escapeHtml(it.nome)}${subTag}</div>
+          <div class="pi-meta">${meta}</div>
         </div>
         <div class="pi-right">
-          <span class="mono">${formatBRL(it.preco * it.quantidade)}</span>
+          <span class="mono">${formatBRL(custo)}</span>
           <button class="x-btn" data-idx="${idx}" title="Remover">✕</button>
         </div>
-      </li>
-    `).join('');
+      </li>`;
+    }).join('');
     ul.querySelectorAll('.x-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         pendingProduct.itens.splice(Number(btn.dataset.idx), 1);
@@ -620,38 +849,38 @@
     });
   }
 
-  document.getElementById('btnNovoProduto').addEventListener('click', () => {
-    pendingProduct = { nome: '', itens: [] };
+  document.getElementById('btnNovoProduto').addEventListener('click', resetCadastroForm);
+  function resetCadastroForm(){
+    pendingProduct = { itens: [] };
     document.getElementById('prodNome').value = '';
+    document.getElementById('prodRendimento').value = '1';
+    document.getElementById('prodUnidadeRendimento').value = 'unidade';
     renderPendingList();
-  });
+  }
 
   document.getElementById('btnSalvarProduto').addEventListener('click', async () => {
     const nome = document.getElementById('prodNome').value.trim();
+    const rendimento = parseFloat(document.getElementById('prodRendimento').value) || 1;
+    const unidadeRendimento = document.getElementById('prodUnidadeRendimento').value.trim() || 'unidade';
     if(!nome){ toast('Dê um nome ao produto antes de salvar.', true); return; }
-    if(pendingProduct.itens.length === 0){ toast('Adicione ao menos um ingrediente.', true); return; }
+    if(pendingProduct.itens.length === 0){ toast('Adicione ao menos um item à receita.', true); return; }
     if(!CONFIG.API_URL){ toast('Configure a URL da API primeiro.', true); return; }
 
     setSync('syncing');
     try{
-      // 1. cria ingredientes novos primeiro, para termos o ID de cada um
       for(const it of pendingProduct.itens){
-        if(it.isNew){
+        if(it.tipoItem === 'ingrediente' && it.isNew){
           const created = await Api.call('addIngredient', { nome: it.nome, unidade: it.unidade, preco: it.preco });
-          it.ingredienteId = created.id;
+          it.itemId = created.id;
         }
       }
-      // 2. cria o produto já com a lista de itens (ingredienteId + quantidade)
       await Api.call('addProduct', {
-        nome,
-        precoVenda: 0,
-        itens: pendingProduct.itens.map(it => ({ ingredienteId: it.ingredienteId, quantidade: it.quantidade }))
+        nome, precoVenda: 0, rendimento, unidadeRendimento,
+        itens: pendingProduct.itens.map(it => ({ tipoItem: it.tipoItem, itemId: it.itemId, quantidade: it.quantidade }))
       });
 
       toast('Produto salvo com sucesso.');
-      pendingProduct = { nome: '', itens: [] };
-      document.getElementById('prodNome').value = '';
-      renderPendingList();
+      resetCadastroForm();
       await loadAll();
       switchTab('dashboard');
     }catch(err){
@@ -706,7 +935,7 @@
       btn.addEventListener('click', async (e) => {
         const tr = e.target.closest('tr');
         const id = tr.dataset.id;
-        const emUso = state.itens.some(it => it.ingredienteId === id);
+        const emUso = state.itens.some(it => it.tipoItem === 'ingrediente' && it.itemId === id);
         const msg = emUso
           ? 'Este ingrediente está sendo usado em produtos cadastrados. Excluir também vai removê-lo desses produtos. Continuar?'
           : 'Excluir este ingrediente?';
@@ -741,20 +970,6 @@
 /* =========================================================================
    TAB: DASHBOARD
    ========================================================================= */
-  function computeProduto(produto){
-    const itens = state.itens
-      .filter(it => it.produtoId === produto.id)
-      .map(it => {
-        const ing = findIngredienteById(it.ingredienteId);
-        const custo = ing ? (Number(ing.preco) || 0) * (Number(it.quantidade) || 0) : 0;
-        return { ...it, ingrediente: ing, custo };
-      });
-    const custoTotal = itens.reduce((acc, it) => acc + it.custo, 0);
-    const precoVenda = Number(produto.precoVenda) || 0;
-    const cmvPct = precoVenda > 0 ? (custoTotal / precoVenda) * 100 : null;
-    return { itens, custoTotal, cmvPct };
-  }
-
   function cmvBadgeClass(pct){
     if(pct === null) return 'badge-neutral';
     if(pct <= CONFIG.CMV_LOW_MAX) return 'badge-good';
@@ -769,15 +984,18 @@
       return;
     }
     wrap.innerHTML = state.produtos.map(produto => {
-      const { itens, custoTotal, cmvPct } = computeProduto(produto);
+      const { itens, custoTotal, cmvPct, custoUnitario } = computeProduto(produto);
       const isOpen = openReceipts.has(produto.id);
+
+      const produtosDisponiveis = state.produtos.filter(p => p.id !== produto.id && !introducesCycle(produto.id, p.id));
+
       return `
       <div class="receipt ${isOpen ? 'open' : ''}" data-id="${produto.id}">
         <div class="receipt-head" data-toggle="${produto.id}">
           <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="rh-name">
             <h3>${escapeHtml(produto.nome)}</h3>
-            <div class="rh-sub">Custo: <span class="mono">${formatBRL(custoTotal)}</span> · ${itens.length} ingrediente(s)</div>
+            <div class="rh-sub">Custo total: <span class="mono">${formatBRL(custoTotal)}</span> · Custo/${escapeHtml(produto.unidadeRendimento)}: <span class="mono">${formatBRL(custoUnitario)}</span> · ${itens.length} item(ns)</div>
           </div>
           <div class="rh-num" onclick="event.stopPropagation()">
             <label>Preço de venda</label>
@@ -786,23 +1004,51 @@
           <span class="badge ${cmvBadgeClass(cmvPct)}">CMV ${formatPct(cmvPct)}</span>
         </div>
         <div class="receipt-body">
+          <div class="yield-panel">
+            <div class="field-inline">
+              <label>Rendimento</label>
+              <input type="number" step="0.001" min="0.001" class="rendimento-input" data-id="${produto.id}" value="${produto.rendimento}">
+            </div>
+            <div class="field-inline">
+              <label>Unidade do rendimento</label>
+              <input type="text" class="unidade-rendimento-input" data-id="${produto.id}" value="${escapeHtml(produto.unidadeRendimento)}">
+            </div>
+            <div class="yield-cost">Custo por ${escapeHtml(produto.unidadeRendimento)}: <strong>${formatBRL(custoUnitario)}</strong></div>
+          </div>
+
           ${itens.map(it => `
             <div class="item-row" data-item-id="${it.id}">
               <div class="it-name">
-                <div class="it-title">${it.ingrediente ? escapeHtml(it.ingrediente.nome) : '(ingrediente removido)'}</div>
-                <div class="it-unit">${it.ingrediente ? escapeHtml(it.ingrediente.unidade) : ''} · relevância no custo: ${formatPct(custoTotal > 0 ? (it.custo / custoTotal) * 100 : 0)}</div>
+                <div class="it-title">${escapeHtml(it.nomeExibicao)}${it.isSubProduto ? '<span class="tag-sub">sub-receita</span>' : ''}</div>
+                <div class="it-unit">${escapeHtml(it.unidadeExibicao)} · relevância no custo: ${formatPct(custoTotal > 0 ? (it.custo / custoTotal) * 100 : 0)}</div>
                 <div class="pct-bar-wrap"><div class="pct-bar" style="width:${custoTotal > 0 ? Math.min(100, (it.custo/custoTotal)*100) : 0}%"></div></div>
               </div>
               <div class="it-qty"><input type="number" step="0.001" min="0" value="${it.quantidade}" class="item-qty-input" data-item-id="${it.id}"></div>
               <div class="it-cost mono">${formatBRL(it.custo)}</div>
-              <button class="x-btn btn-del-item" data-item-id="${it.id}" title="Remover ingrediente do produto">✕</button>
+              <button class="x-btn btn-del-item" data-item-id="${it.id}" title="Remover item do produto">✕</button>
             </div>
           `).join('')}
-          <div class="add-item-form">
-            <input type="text" class="new-item-nome" list="ingredientesDatalist" placeholder="Nome do ingrediente" data-produto-id="${produto.id}">
-            <input type="number" step="0.001" min="0" class="new-item-qtd" placeholder="Porção" style="width:90px;">
-            <button class="btn btn-ghost btn-sm btn-add-item" data-produto-id="${produto.id}">Adicionar ingrediente</button>
+
+          <div class="add-item-form" data-produto-id="${produto.id}">
+            <div class="segmented" data-toggle-group="dash-${produto.id}">
+              <button type="button" class="seg-btn active" data-tipo="ingrediente">Ingrediente</button>
+              <button type="button" class="seg-btn" data-tipo="produto">Produto (sub-receita)</button>
+            </div>
+            <div class="row dash-ingrediente-fields">
+              <input type="text" class="new-item-nome" list="ingredientesDatalist" placeholder="Nome do ingrediente">
+              <input type="number" step="0.001" min="0" class="new-item-qtd" placeholder="Porção" style="width:90px;">
+              <button class="btn btn-ghost btn-sm btn-add-item">Adicionar</button>
+            </div>
+            <div class="row dash-produto-fields hidden">
+              <select class="new-item-produto-select">
+                <option value="">Selecione um produto…</option>
+                ${produtosDisponiveis.map(p => `<option value="${p.id}">${escapeHtml(p.nome)}</option>`).join('')}
+              </select>
+              <input type="number" step="0.001" min="0" class="new-item-produto-qtd" placeholder="Qtd." style="width:90px;">
+              <button class="btn btn-ghost btn-sm btn-add-produto-item">Adicionar</button>
+            </div>
           </div>
+
           <div class="receipt-foot">
             <button class="btn btn-danger btn-sm btn-del-produto" data-id="${produto.id}">Excluir produto</button>
           </div>
@@ -810,7 +1056,10 @@
       </div>`;
     }).join('');
 
-    // toggle expand/collapse
+    wireDashboardEvents(wrap);
+  }
+
+  function wireDashboardEvents(wrap){
     wrap.querySelectorAll('[data-toggle]').forEach(head => {
       head.addEventListener('click', () => {
         const id = head.dataset.toggle;
@@ -819,26 +1068,50 @@
       });
     });
 
-    // preço de venda inline edit
+    wrap.querySelectorAll('[data-toggle-group^="dash-"] .seg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const form = btn.closest('.add-item-form');
+        form.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        form.querySelector('.dash-ingrediente-fields').classList.toggle('hidden', btn.dataset.tipo !== 'ingrediente');
+        form.querySelector('.dash-produto-fields').classList.toggle('hidden', btn.dataset.tipo !== 'produto');
+      });
+    });
+
     wrap.querySelectorAll('.preco-venda-input').forEach(input => {
       input.addEventListener('change', async () => {
         const id = input.dataset.id;
-        const produto = state.produtos.find(p => p.id === id);
+        const produto = findProdutoById(id);
         const precoVenda = parseFloat(input.value) || 0;
         setSync('syncing');
         try{
-          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda });
+          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda, rendimento: produto.rendimento, unidadeRendimento: produto.unidadeRendimento });
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
     });
 
-    // quantidade do item inline edit
+    wrap.querySelectorAll('.rendimento-input, .unidade-rendimento-input').forEach(input => {
+      input.addEventListener('change', async () => {
+        const id = input.dataset.id;
+        const produto = findProdutoById(id);
+        const card = wrap.querySelector(`.receipt[data-id="${id}"]`);
+        const rendimento = parseFloat(card.querySelector('.rendimento-input').value) || 1;
+        const unidadeRendimento = card.querySelector('.unidade-rendimento-input').value.trim() || 'unidade';
+        setSync('syncing');
+        try{
+          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda: produto.precoVenda, rendimento, unidadeRendimento });
+          openReceipts.add(id);
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
     wrap.querySelectorAll('.item-qty-input').forEach(input => {
       input.addEventListener('change', async () => {
         const itemId = input.dataset.itemId;
         const quantidade = parseFloat(input.value);
-        if(isNaN(quantidade) || quantidade < 0){ toast('Porção inválida.', true); return; }
+        if(isNaN(quantidade) || quantidade < 0){ toast('Quantidade inválida.', true); return; }
         setSync('syncing');
         try{
           await Api.call('updateProdutoItem', { id: itemId, quantidade });
@@ -847,51 +1120,70 @@
       });
     });
 
-    // remover item (só o ingrediente, mantém o produto)
     wrap.querySelectorAll('.btn-del-item').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if(!confirm('Remover este ingrediente do produto?')) return;
+        if(!confirm('Remover este item do produto?')) return;
         setSync('syncing');
         try{
           await Api.call('deleteProdutoItem', { id: btn.dataset.itemId });
-          toast('Ingrediente removido do produto.');
+          toast('Item removido do produto.');
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
     });
 
-    // adicionar ingrediente a um produto existente
     wrap.querySelectorAll('.btn-add-item').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const produtoId = btn.dataset.produtoId;
-        const container = btn.closest('.add-item-form');
-        const nome = container.querySelector('.new-item-nome').value.trim();
-        const qtd = parseFloat(container.querySelector('.new-item-qtd').value);
+        const form = btn.closest('.add-item-form');
+        const produtoId = form.dataset.produtoId;
+        const nome = form.querySelector('.new-item-nome').value.trim();
+        const qtd = parseFloat(form.querySelector('.new-item-qtd').value);
         if(!nome){ toast('Informe o nome do ingrediente.', true); return; }
         if(isNaN(qtd) || qtd <= 0){ toast('Informe a porção usada.', true); return; }
         const existing = findIngredienteByName(nome);
         setSync('syncing');
         try{
-          let ingredienteId = existing ? existing.id : null;
+          let itemId = existing ? existing.id : null;
           if(!existing){
             const created = await Api.call('addIngredient', { nome, unidade: 'unidade', preco: 0 });
-            ingredienteId = created.id;
-            toast('Novo ingrediente criado com preço R$ 0,00 — ajuste o preço na aba Dados.');
+            itemId = created.id;
+            toast('Novo ingrediente criado com preço R$ 0,00 — ajuste na aba Dados.');
           }
-          await Api.call('addProdutoItem', { produtoId, ingredienteId, quantidade: qtd });
+          await Api.call('addProdutoItem', { produtoId, tipoItem: 'ingrediente', itemId, quantidade: qtd });
           openReceipts.add(produtoId);
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
     });
 
-    // excluir produto inteiro
-    wrap.querySelectorAll('.btn-del-produto').forEach(btn => {
+    wrap.querySelectorAll('.btn-add-produto-item').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if(!confirm('Excluir este produto e todos os seus ingredientes associados?')) return;
+        const form = btn.closest('.add-item-form');
+        const produtoId = form.dataset.produtoId;
+        const selectedId = form.querySelector('.new-item-produto-select').value;
+        const qtd = parseFloat(form.querySelector('.new-item-produto-qtd').value);
+        if(!selectedId){ toast('Selecione um produto.', true); return; }
+        if(isNaN(qtd) || qtd <= 0){ toast('Informe a quantidade usada.', true); return; }
         setSync('syncing');
         try{
-          await Api.call('deleteProduct', { id: btn.dataset.id });
+          await Api.call('addProdutoItem', { produtoId, tipoItem: 'produto', itemId: selectedId, quantidade: qtd });
+          openReceipts.add(produtoId);
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    wrap.querySelectorAll('.btn-del-produto').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const usadoEmOutro = state.itens.some(it => it.tipoItem === 'produto' && it.itemId === id);
+        const msg = usadoEmOutro
+          ? 'Este produto é usado como sub-receita em outro produto. Excluir vai removê-lo de lá também. Continuar?'
+          : 'Excluir este produto e todos os seus itens associados?';
+        if(!confirm(msg)) return;
+        setSync('syncing');
+        try{
+          await Api.call('deleteProduct', { id });
           toast('Produto excluído.');
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
@@ -900,9 +1192,61 @@
   }
 
 /* =========================================================================
+   TAB: USUÁRIOS (admin)
+   ========================================================================= */
+  function renderUsuariosTable(){
+    const tbody = document.getElementById('usuariosTableBody');
+    const myId = AuthService.getUser()?.id;
+    if(state.usuarios.length === 0){
+      tbody.innerHTML = '<tr><td colspan="3" class="empty-note">Nenhum usuário encontrado.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = state.usuarios.map(u => `
+      <tr data-id="${u.id}">
+        <td>${escapeHtml(u.email)}</td>
+        <td><span class="role-badge ${u.role}">${u.role === 'admin' ? 'Administrador' : 'Usuário'}</span></td>
+        <td class="col-actions">
+          <button class="btn btn-danger btn-sm btn-del-user" data-id="${u.id}" ${u.id === myId ? 'disabled title="Você não pode excluir seu próprio usuário"' : ''}>Excluir</button>
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('.btn-del-user').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm('Excluir este usuário? Ele perderá o acesso ao app imediatamente.')) return;
+        setSync('syncing');
+        try{
+          await Api.call('deleteUsuario', { id: btn.dataset.id });
+          toast('Usuário excluído.');
+          await refreshUsuarios();
+          setSync('ok');
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+  }
+
+  document.getElementById('btnAddUsuario').addEventListener('click', async () => {
+    const email = document.getElementById('novoUserEmail').value.trim();
+    const senha = document.getElementById('novoUserSenha').value;
+    const role = document.getElementById('novoUserRole').value;
+    if(!email){ toast('Informe o e-mail do novo usuário.', true); return; }
+    if(!senha || senha.length < 4){ toast('A senha precisa ter ao menos 4 caracteres.', true); return; }
+    setSync('syncing');
+    try{
+      await Api.call('addUsuario', { email, senha, role });
+      toast('Usuário criado. Já pode fazer login com o e-mail e senha informados.');
+      document.getElementById('novoUserEmail').value = '';
+      document.getElementById('novoUserSenha').value = '';
+      document.getElementById('novoUserRole').value = 'usuario';
+      await refreshUsuarios();
+      setSync('ok');
+    }catch(err){ setSync('error'); toast(err.message, true); }
+  });
+
+/* =========================================================================
    NAVEGAÇÃO / TABS
    ========================================================================= */
-  const TAB_TITLES = { cadastro: 'Cadastro de produto', dados: 'Ingredientes e preços', dashboard: 'Dashboard de produtos' };
+  const TAB_TITLES = { cadastro: 'Cadastro de produto', dados: 'Ingredientes e preços', dashboard: 'Dashboard de produtos', usuarios: 'Gerenciar usuários' };
   function switchTab(tab){
     document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.id === 'tab-' + tab));
     document.querySelectorAll('.nav-btn[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
@@ -916,37 +1260,48 @@
 /* =========================================================================
    LOGIN / LOGOUT
    ========================================================================= */
-  function showLogin(){
+  function showLogin(message){
     document.getElementById('loginScreen').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
     document.getElementById('tabbarMobile').classList.add('hidden');
+    const banner = document.getElementById('loginBanner');
+    if(message){ banner.textContent = message; banner.classList.remove('hidden'); }
+    else { banner.classList.add('hidden'); }
   }
   function showApp(){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     document.getElementById('tabbarMobile').classList.remove('hidden');
+    const isAdmin = AuthService.isAdmin();
+    document.getElementById('navUsuarios').classList.toggle('hidden', !isAdmin);
+    document.getElementById('navUsuariosMobile').classList.toggle('hidden', !isAdmin);
     updateApiBanner();
     loadAll();
   }
 
-  document.getElementById('btnLogin').addEventListener('click', () => {
+  document.getElementById('btnLogin').addEventListener('click', async () => {
     const email = document.getElementById('loginEmail').value.trim();
-    const code = document.getElementById('loginCode').value;
-    const result = AuthService.login(email, code);
+    const senha = document.getElementById('loginSenha').value;
     const banner = document.getElementById('loginBanner');
-    if(result.ok){
+    const btn = document.getElementById('btnLogin');
+    if(!email || !senha){ banner.textContent = 'Preencha e-mail e senha.'; banner.classList.remove('hidden'); return; }
+    btn.disabled = true; btn.textContent = 'Entrando…';
+    try{
+      await AuthService.login(email, senha);
       banner.classList.add('hidden');
       showApp();
-    } else {
-      banner.textContent = result.error;
+    }catch(err){
+      banner.textContent = err.message;
       banner.classList.remove('hidden');
+    }finally{
+      btn.disabled = false; btn.textContent = 'Entrar';
     }
   });
-  document.getElementById('loginCode').addEventListener('keydown', (e) => {
+  document.getElementById('loginSenha').addEventListener('keydown', (e) => {
     if(e.key === 'Enter') document.getElementById('btnLogin').click();
   });
-  document.getElementById('btnLogout').addEventListener('click', () => {
-    AuthService.logout();
+  document.getElementById('btnLogout').addEventListener('click', async () => {
+    await AuthService.logout();
     showLogin();
   });
 
@@ -970,13 +1325,6 @@
     toast('URL da API salva.');
     if(document.getElementById('app').classList.contains('hidden') === false) loadAll();
   });
-
-/* =========================================================================
-   UTIL
-   ========================================================================= */
-  function escapeHtml(str){
-    return String(str ?? '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
 
 /* =========================================================================
    BOOT
