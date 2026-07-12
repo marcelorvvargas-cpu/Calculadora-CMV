@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>CMV. — Custo de Mercadoria Vendida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1F2A24;
+    --ink-soft:#4B564E;
+    --paper:#EEEEDF;
+    --surface:#FFFFFF;
+    --border:#D9D3BE;
+    --brand:#2F6F5E;
+    --brand-dark:#1E4A3D;
+    --brand-soft:#DCE9E2;
+    --warn:#C97A2B;
+    --warn-soft:#F5E3CC;
+    --danger:#B23A34;
+    --danger-soft:#F3DAD7;
+    --good:#2F6F5E;
+    --good-soft:#DCE9E2;
+    --radius:14px;
+    --shadow: 0 1px 2px rgba(31,42,36,0.06), 0 8px 24px -12px rgba(31,42,36,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; margin:0; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums;}
+  .hidden{display:none !important;}
+  button{font-family:inherit; cursor:pointer;}
+  input,select{font-family:inherit;}
+
+  /* ---------- Login ---------- */
+  .login-screen{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(47,111,94,0.10), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(201,122,43,0.10), transparent 45%),
+      var(--paper);
+  }
+  .login-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:36px 32px; width:100%; max-width:380px;
+  }
+  .login-card h1{font-size:32px; color:var(--brand-dark);}
+  .login-card h1 span{color:var(--warn);}
+  .login-card p.tag{color:var(--ink-soft); margin:6px 0 24px; font-size:14px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin-bottom:6px;}
+  .field input, .field select{
+    width:100%; padding:11px 12px; border:1px solid var(--border); border-radius:9px; font-size:15px;
+    background:var(--paper); color:var(--ink); outline:none; transition:border-color .15s;
+  }
+  .field input:focus, .field select:focus{border-color:var(--brand);}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 18px; border-radius:9px; border:1px solid transparent; font-weight:600; font-size:14px;
+    transition:transform .08s ease, filter .15s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--brand); color:#fff; width:100%;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-ghost{background:transparent; border-color:var(--border); color:var(--ink);}
+  .btn-ghost:hover{background:var(--paper);}
+  .btn-danger{background:var(--danger-soft); color:var(--danger); border-color:transparent;}
+  .btn-danger:hover{filter:brightness(0.96);}
+  .btn-sm{padding:6px 10px; font-size:12px; border-radius:7px;}
+  .hint{font-size:12px; color:var(--ink-soft); margin-top:16px; line-height:1.5;}
+  .banner{
+    font-size:12px; padding:10px 12px; border-radius:8px; margin-bottom:16px; line-height:1.5;
+    background:var(--warn-soft); color:#7A4E1B; border:1px solid #e6c793;
+  }
+  .banner a, .banner button.link{color:#7A4E1B; text-decoration:underline; background:none; border:none; padding:0; font:inherit; cursor:pointer;}
+
+  /* ---------- App shell ---------- */
+  .app{display:flex; min-height:100vh;}
+  .sidebar{
+    width:220px; flex-shrink:0; background:var(--ink); color:#EFEDE3; display:flex; flex-direction:column;
+    padding:22px 16px; gap:4px;
+  }
+  .brand{font-family:'Fraunces',serif; font-size:26px; color:#fff; margin-bottom:22px; padding:0 6px;}
+  .brand span{color:var(--warn);}
+  .nav-btn{
+    text-align:left; background:none; border:none; color:#C9CFC7; padding:11px 12px; border-radius:9px;
+    font-size:14px; font-weight:500; display:flex; align-items:center; gap:8px;
+  }
+  .nav-btn:hover{background:rgba(255,255,255,0.06); color:#fff;}
+  .nav-btn.active{background:var(--brand); color:#fff;}
+  .nav-btn.ghost{margin-top:auto; color:#9CA79E; border:1px solid rgba(255,255,255,0.12);}
+  .sidebar-bottom{margin-top:auto; display:flex; flex-direction:column; gap:4px;}
+
+  .content{flex:1; padding:28px 32px 100px; max-width:1100px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px;}
+  .topbar h2{font-size:24px;}
+  #syncStatus{font-size:12px; color:var(--ink-soft); display:flex; align-items:center; gap:6px;}
+  #syncStatus .dot{width:7px; height:7px; border-radius:50%; background:var(--good); display:inline-block;}
+  #syncStatus.syncing .dot{background:var(--warn);}
+  #syncStatus.error .dot{background:var(--danger);}
+
+  .tab{display:none;}
+  .tab.active{display:block;}
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:22px; margin-bottom:18px; box-shadow:var(--shadow);
+  }
+  .card h3{font-size:16px; margin-bottom:16px; color:var(--brand-dark);}
+  .grid-3{display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:10px; align-items:end;}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+
+  /* pending ingredient list (cadastro) */
+  .pending-list{list-style:none; margin:14px 0 0; padding:0; border-top:1px dashed var(--border);}
+  .pending-list li{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 2px;
+    border-bottom:1px dashed var(--border); font-size:14px;
+  }
+  .pending-list .pi-name{font-weight:600;}
+  .pending-list .pi-meta{color:var(--ink-soft); font-size:12px;}
+  .pending-list .pi-right{display:flex; align-items:center; gap:12px;}
+  .x-btn{background:none; border:none; color:var(--danger); font-size:16px; line-height:1; padding:4px;}
+  .empty-note{color:var(--ink-soft); font-size:13px; padding:14px 2px;}
+
+  /* Dados table */
+  table.data-table{width:100%; border-collapse:collapse; font-size:14px;}
+  table.data-table th{
+    text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft);
+    padding:8px 8px; border-bottom:1px solid var(--border);
+  }
+  table.data-table td{padding:7px 8px; border-bottom:1px solid var(--border); vertical-align:middle;}
+  table.data-table input, table.data-table select{
+    width:100%; padding:7px 8px; border:1px solid var(--border); border-radius:7px; background:var(--paper); font-size:13px;
+  }
+  .col-actions{white-space:nowrap; text-align:right;}
+
+  /* Dashboard receipt cards */
+  .receipt{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:16px;
+    box-shadow:var(--shadow); position:relative; overflow:hidden;
+  }
+  .receipt::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:6px;
+    background-image: radial-gradient(circle, var(--paper) 3px, transparent 3.5px);
+    background-size:14px 12px; background-position:0 -6px;
+  }
+  .receipt-head{
+    display:flex; align-items:center; gap:14px; padding:20px 20px 16px; cursor:pointer;
+  }
+  .receipt-head .rh-name{flex:1; min-width:0;}
+  .receipt-head .rh-name h3{font-size:17px; color:var(--ink);}
+  .receipt-head .rh-name .rh-sub{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .rh-num{text-align:right; font-size:13px;}
+  .rh-num label{display:block; font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:3px;}
+  .rh-num input{
+    width:100px; text-align:right; padding:6px 8px; border:1px solid var(--border); border-radius:7px; font-size:14px;
+    font-family:'IBM Plex Mono',monospace; background:var(--paper);
+  }
+  .badge{
+    padding:5px 10px; border-radius:999px; font-size:12px; font-weight:700; font-family:'IBM Plex Mono',monospace;
+    white-space:nowrap;
+  }
+  .badge-good{background:var(--good-soft); color:var(--brand-dark);}
+  .badge-warn{background:var(--warn-soft); color:#7A4E1B;}
+  .badge-bad{background:var(--danger-soft); color:var(--danger);}
+  .badge-neutral{background:#EDEBDE; color:var(--ink-soft);}
+  .chevron{transition:transform .18s ease; color:var(--ink-soft); flex-shrink:0;}
+  .receipt.open .chevron{transform:rotate(180deg);}
+
+  .receipt-body{display:none; padding:0 20px 20px; border-top:1px dashed var(--border);}
+  .receipt.open .receipt-body{display:block;}
+  .item-row{
+    display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed var(--border); font-size:13px;
+  }
+  .item-row .it-name{flex:1; min-width:0;}
+  .item-row .it-name .it-title{font-weight:600;}
+  .item-row .it-name .it-unit{color:var(--ink-soft); font-size:11px;}
+  .item-row .it-qty{width:80px;}
+  .item-row .it-qty input{width:100%; padding:6px 6px; border:1px solid var(--border); border-radius:6px; font-family:'IBM Plex Mono',monospace; font-size:13px; text-align:right; background:var(--paper);}
+  .item-row .it-cost{width:90px; text-align:right; font-family:'IBM Plex Mono',monospace;}
+  .item-row .it-pct{width:60px; text-align:right; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; font-size:12px;}
+  .pct-bar-wrap{height:4px; background:var(--border); border-radius:2px; margin-top:4px; overflow:hidden;}
+  .pct-bar{height:100%; background:var(--brand);}
+  .receipt-foot{display:flex; justify-content:space-between; align-items:center; padding-top:14px;}
+  .add-item-form{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+  .add-item-form input, .add-item-form select{padding:7px 8px; border:1px solid var(--border); border-radius:7px; font-size:13px; background:var(--paper);}
+
+  /* Toast & modal */
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff;
+    padding:12px 18px; border-radius:9px; font-size:13px; box-shadow:var(--shadow); z-index:200; max-width:80vw;
+  }
+  .toast.err{background:var(--danger);}
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(31,42,36,0.45); display:flex; align-items:center; justify-content:center;
+    padding:20px; z-index:300;
+  }
+  .modal{background:var(--surface); border-radius:var(--radius); padding:24px; width:100%; max-width:440px; box-shadow:var(--shadow);}
+  .modal h3{margin-bottom:6px;}
+  .modal p{font-size:13px; color:var(--ink-soft); margin:0 0 16px; line-height:1.5;}
+  .modal-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:18px;}
+
+  /* Bottom tab bar for mobile */
+  .tabbar-mobile{display:none;}
+
+  @media (max-width: 820px){
+    .app{flex-direction:column;}
+    .sidebar{
+      width:100%; flex-direction:row; align-items:center; padding:12px 14px; gap:0;
+      position:fixed; top:0; left:0; right:0; z-index:100; height:56px;
+    }
+    .brand{margin-bottom:0; font-size:20px;}
+    .sidebar nav{display:none;}
+    .sidebar-bottom{margin-top:0; margin-left:auto; flex-direction:row; gap:2px;}
+    .sidebar-bottom .nav-btn{padding:8px 10px; font-size:18px; border:none;}
+    .sidebar-bottom .btn-label{display:none;}
+    .content{padding:76px 16px 90px; max-width:100%;}
+    .tabbar-mobile{
+      display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--ink); z-index:100;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom)); gap:6px;
+    }
+    .tabbar-mobile button{
+      flex:1; background:none; border:none; color:#9CA79E; font-size:11px; padding:8px 4px; border-radius:9px;
+      display:flex; flex-direction:column; align-items:center; gap:2px; font-weight:600;
+    }
+    .tabbar-mobile button.active{color:#fff; background:var(--brand);}
+    .grid-3{grid-template-columns:1fr 1fr; gap:10px;}
+    .grid-3 > *:last-child{grid-column:1 / -1;}
+    .receipt-head{flex-wrap:wrap;}
+    .rh-num{order:3; width:50%;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== LOGIN ===================== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <h1>CMV<span>.</span></h1>
+      <p class="tag">Custo de Mercadoria Vendida — calculadora conectada à sua planilha</p>
+      <div id="loginBanner" class="banner hidden"></div>
+      <div class="field">
+        <label for="loginEmail">Seu e-mail</label>
+        <input id="loginEmail" type="email" placeholder="voce@empresa.com.br" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="loginCode">Código de acesso</label>
+        <input id="loginCode" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" id="btnLogin">Entrar</button>
+      <button class="btn btn-ghost" id="btnOpenConfigFromLogin" style="width:100%; margin-top:8px;">⚙ Configurar API</button>
+      <p class="hint">Este login é local e simples — pensado para uso individual enquanto você valida o app. A lógica de autenticação fica isolada em um único módulo (<code>AuthService</code>) no código, pronta para ser trocada por um provedor real (ex: Supabase Auth) sem mexer no resto do app.</p>
+    </div>
+  </div>
+
+  <!-- ===================== APP ===================== -->
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand">CMV<span>.</span></div>
+      <nav>
+        <button class="nav-btn active" data-tab="cadastro">＋ Cadastro</button>
+        <button class="nav-btn" data-tab="dados">▤ Dados</button>
+        <button class="nav-btn" data-tab="dashboard">◆ Dashboard</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-btn ghost" id="btnConfig"><span class="icon">⚙</span><span class="btn-label"> Configurar API</span></button>
+        <button class="nav-btn ghost" id="btnLogout"><span class="icon">↪</span><span class="btn-label"> Sair</span></button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <h2 id="topbarTitle">Cadastro de produto</h2>
+        <div id="syncStatus"><span class="dot"></span><span id="syncLabel">Sincronizado</span></div>
+      </header>
+
+      <div id="apiBanner" class="banner hidden">
+        Nenhuma planilha conectada ainda. <button class="link" id="btnOpenConfigFromBanner">Configurar URL da API</button>
+      </div>
+
+      <!-- ---- TAB: CADASTRO ---- -->
+      <section id="tab-cadastro" class="tab active">
+        <div class="card">
+          <h3>1. Nome do produto</h3>
+          <div class="field" style="margin-bottom:0;">
+            <input id="prodNome" type="text" placeholder="Ex: Bolo de cenoura 1kg">
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>2. Adicionar ingrediente</h3>
+          <div class="grid-3">
+            <div class="field" style="margin-bottom:0;">
+              <label>Nome do ingrediente</label>
+              <input id="ingNome" list="ingredientesDatalist" placeholder="Ex: Farinha de trigo">
+              <datalist id="ingredientesDatalist"></datalist>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Unidade</label>
+              <select id="ingUnidade">
+                <option value="kg">kg</option>
+                <option value="g">g</option>
+                <option value="l">l</option>
+                <option value="ml">ml</option>
+                <option value="unidade">unidade</option>
+                <option value="dz">dúzia</option>
+                <option value="pacote">pacote</option>
+                <option value="caixa">caixa</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Preço da unidade (R$)</label>
+              <input id="ingPreco" type="number" step="0.01" min="0" placeholder="0,00">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Porção usada na receita</label>
+              <input id="ingQtd" type="number" step="0.001" min="0" placeholder="0,000">
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnAddIng" style="height:41px;">Adicionar</button>
+          </div>
+          <p id="ingExistsNote" class="hint hidden">Ingrediente já cadastrado — preço e unidade vêm da aba <strong>Dados</strong>. Para alterar o preço, edite lá (a mudança afeta todos os produtos que o usam).</p>
+
+          <ul class="pending-list" id="pendingList">
+            <li class="empty-note">Nenhum ingrediente adicionado ainda.</li>
+          </ul>
+        </div>
+
+        <div class="card" style="display:flex; gap:10px; justify-content:flex-end;">
+          <button class="btn btn-ghost" id="btnNovoProduto">Limpar / novo produto</button>
+          <button class="btn btn-primary" id="btnSalvarProduto">Salvar produto</button>
+        </div>
+      </section>
+
+      <!-- ---- TAB: DADOS ---- -->
+      <section id="tab-dados" class="tab">
+        <div class="card">
+          <h3>Ingredientes cadastrados</h3>
+          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Edite o preço aqui sempre que comprar por um valor diferente — o custo de todos os produtos que usam esse ingrediente é recalculado automaticamente.</p>
+          <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr><th>Nome</th><th>Unidade</th><th>Preço da unidade (R$)</th><th class="col-actions">Ações</th></tr>
+            </thead>
+            <tbody id="ingredientesTableBody"></tbody>
+          </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Novo ingrediente</h3>
+          <div class="grid-3" style="grid-template-columns:2fr 1fr 1fr auto;">
+            <div class="field" style="margin-bottom:0;">
+              <label>Nome</label>
+              <input id="novoIngNome" type="text" placeholder="Ex: Ovo">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Unidade</label>
+              <select id="novoIngUnidade">
+                <option value="kg">kg</option><option value="g">g</option><option value="l">l</option>
+                <option value="ml">ml</option><option value="unidade">unidade</option><option value="dz">dúzia</option>
+                <option value="pacote">pacote</option><option value="caixa">caixa</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Preço (R$)</label>
+              <input id="novoIngPreco" type="number" step="0.01" min="0" placeholder="0,00">
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnAddIngredienteDados" style="height:41px;">Adicionar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---- TAB: DASHBOARD ---- -->
+      <section id="tab-dashboard" class="tab">
+        <div id="dashboardList"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="tabbar-mobile hidden" id="tabbarMobile">
+    <button data-tab="cadastro" class="active">＋<br>Cadastro</button>
+    <button data-tab="dados">▤<br>Dados</button>
+    <button data-tab="dashboard">◆<br>Dashboard</button>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <div id="configModalOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>Configurar planilha</h3>
+      <p>Cole aqui a URL do Google Apps Script publicado como "Aplicativo da Web" (veja o passo a passo no arquivo do script). Fica salva apenas neste navegador.</p>
+      <div class="field">
+        <label>URL da API</label>
+        <input id="configApiUrl" type="text" placeholder="https://script.google.com/macros/s/.../exec">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost btn-sm" id="btnCloseConfig">Cancelar</button>
+        <button class="btn btn-primary btn-sm" id="btnSaveConfig">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* =========================================================================
+   CONFIG
+   - ACCESS_CODE: código simples de acesso ao app (troque este valor).
+   - API_URL: URL do Google Apps Script, salva em localStorage (é apenas
+     um endereço de configuração, não é dado do negócio — os dados reais
+     de produtos e ingredientes SEMPRE ficam na planilha, nunca no navegador).
+   ========================================================================= */
+  const CONFIG = {
+    ACCESS_CODE: 'trocar123',
+    get API_URL(){ return localStorage.getItem('cmv_api_url') || ''; },
+    set API_URL(v){ localStorage.setItem('cmv_api_url', v); },
+    CMV_LOW_MAX: 30,   // até este % o CMV é considerado bom (badge verde)
+    CMV_MID_MAX: 45    // até este % é atenção (amarelo); acima disso é alerta (vermelho)
+  };
+
+/* =========================================================================
+   AUTH SERVICE
+   Módulo isolado de autenticação. Hoje é um login simples (código de acesso
+   fixo), guardado em sessionStorage (não é dado de negócio, é só a sessão
+   do navegador). Quando for migrar para Supabase:
+     1. Troque login()/logout()/getUser()/isLoggedIn() pelas chamadas do
+        supabase.auth (signInWithPassword, signOut, getUser, etc).
+     2. Nenhum outro lugar do app precisa mudar, pois tudo chama AuthService.
+   ========================================================================= */
+  const AuthService = {
+    KEY: 'cmv_session',
+    login(email, code){
+      if(!email || !code) return {ok:false, error:'Preencha e-mail e código de acesso.'};
+      if(code !== CONFIG.ACCESS_CODE) return {ok:false, error:'Código de acesso incorreto.'};
+      sessionStorage.setItem(this.KEY, JSON.stringify({email, loggedAt:Date.now()}));
+      return {ok:true};
+    },
+    logout(){ sessionStorage.removeItem(this.KEY); },
+    getUser(){ const raw = sessionStorage.getItem(this.KEY); return raw ? JSON.parse(raw) : null; },
+    isLoggedIn(){ return !!this.getUser(); }
+  };
+
+/* =========================================================================
+   API — comunicação com o Google Apps Script
+   Usamos POST com Content-Type "text/plain" de propósito: isso faz o
+   navegador tratar a requisição como "simple request" e evita o preflight
+   OPTIONS, que o Apps Script não responde bem. O Apps Script recebe o texto
+   e nós fazemos JSON.parse manualmente do lado de lá.
+   ========================================================================= */
+  const Api = {
+    async call(action, payload = {}){
+      if(!CONFIG.API_URL){
+        throw new Error('Configure a URL da API primeiro (botão "Configurar API").');
+      }
+      const res = await fetch(CONFIG.API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, payload })
+      });
+      let json;
+      try{ json = await res.json(); }
+      catch(e){ throw new Error('Resposta inválida da API. Confira se a URL está correta e se o app foi implantado como "Qualquer pessoa".'); }
+      if(!json.ok) throw new Error(json.error || 'Erro desconhecido na API.');
+      return json.data;
+    }
+  };
+
+/* =========================================================================
+   ESTADO
+   ========================================================================= */
+  let state = { ingredientes: [], produtos: [], itens: [] };
+  let pendingProduct = { nome: '', itens: [] }; // itens: {ingredienteId?, isNew, nome, unidade, preco, quantidade}
+  let openReceipts = new Set();
+
+/* =========================================================================
+   HELPERS
+   ========================================================================= */
+  function formatBRL(n){
+    n = Number(n) || 0;
+    return 'R$ ' + n.toFixed(2).replace('.', ',');
+  }
+  function formatPct(n){
+    if(n === null || n === undefined || isNaN(n)) return '—';
+    return n.toFixed(1).replace('.', ',') + '%';
+  }
+  function findIngredienteByName(nome){
+    const alvo = (nome || '').trim().toLowerCase();
+    return state.ingredientes.find(i => (i.nome || '').trim().toLowerCase() === alvo);
+  }
+  function findIngredienteById(id){
+    return state.ingredientes.find(i => i.id === id);
+  }
+  function toast(msg, isErr){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.toggle('err', !!isErr);
+    el.classList.remove('hidden');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.add('hidden'), 3200);
+  }
+  function setSync(status){
+    const el = document.getElementById('syncStatus');
+    const label = document.getElementById('syncLabel');
+    el.classList.remove('syncing', 'error');
+    if(status === 'syncing'){ el.classList.add('syncing'); label.textContent = 'Sincronizando…'; }
+    else if(status === 'error'){ el.classList.add('error'); label.textContent = 'Erro de sincronização'; }
+    else { label.textContent = 'Sincronizado'; }
+  }
+  function updateApiBanner(){
+    const banner = document.getElementById('apiBanner');
+    banner.classList.toggle('hidden', !!CONFIG.API_URL);
+  }
+
+/* =========================================================================
+   CARREGAR DADOS DA PLANILHA
+   ========================================================================= */
+  async function loadAll(){
+    if(!CONFIG.API_URL){ updateApiBanner(); return; }
+    setSync('syncing');
+    try{
+      const data = await Api.call('getAll');
+      state.ingredientes = data.ingredientes || [];
+      state.produtos = data.produtos || [];
+      state.itens = data.itens || [];
+      setSync('ok');
+      renderAll();
+    }catch(err){
+      setSync('error');
+      toast(err.message, true);
+    }
+  }
+
+  function renderAll(){
+    renderIngredientesDatalist();
+    renderDados();
+    renderDashboard();
+  }
+
+/* =========================================================================
+   TAB: CADASTRO
+   ========================================================================= */
+  function renderIngredientesDatalist(){
+    const dl = document.getElementById('ingredientesDatalist');
+    dl.innerHTML = state.ingredientes.map(i => `<option value="${escapeHtml(i.nome)}">`).join('');
+  }
+
+  document.getElementById('ingNome').addEventListener('input', (e) => {
+    const match = findIngredienteByName(e.target.value);
+    const note = document.getElementById('ingExistsNote');
+    const precoInput = document.getElementById('ingPreco');
+    const unidadeInput = document.getElementById('ingUnidade');
+    if(match){
+      note.classList.remove('hidden');
+      precoInput.value = match.preco;
+      unidadeInput.value = match.unidade;
+      precoInput.disabled = true;
+      unidadeInput.disabled = true;
+    } else {
+      note.classList.add('hidden');
+      precoInput.disabled = false;
+      unidadeInput.disabled = false;
+    }
+  });
+
+  document.getElementById('btnAddIng').addEventListener('click', () => {
+    const nome = document.getElementById('ingNome').value.trim();
+    const unidade = document.getElementById('ingUnidade').value;
+    const preco = parseFloat(document.getElementById('ingPreco').value);
+    const qtd = parseFloat(document.getElementById('ingQtd').value);
+
+    if(!nome){ toast('Informe o nome do ingrediente.', true); return; }
+    if(isNaN(preco) || preco < 0){ toast('Informe um preço válido para o ingrediente.', true); return; }
+    if(isNaN(qtd) || qtd <= 0){ toast('Informe a porção usada na receita.', true); return; }
+
+    const existing = findIngredienteByName(nome);
+    pendingProduct.itens.push({
+      ingredienteId: existing ? existing.id : null,
+      isNew: !existing,
+      nome, unidade, preco, quantidade: qtd
+    });
+
+    document.getElementById('ingNome').value = '';
+    document.getElementById('ingPreco').value = '';
+    document.getElementById('ingPreco').disabled = false;
+    document.getElementById('ingUnidade').disabled = false;
+    document.getElementById('ingQtd').value = '';
+    document.getElementById('ingExistsNote').classList.add('hidden');
+    renderPendingList();
+  });
+
+  function renderPendingList(){
+    const ul = document.getElementById('pendingList');
+    if(pendingProduct.itens.length === 0){
+      ul.innerHTML = '<li class="empty-note">Nenhum ingrediente adicionado ainda.</li>';
+      return;
+    }
+    ul.innerHTML = pendingProduct.itens.map((it, idx) => `
+      <li>
+        <div>
+          <div class="pi-name">${escapeHtml(it.nome)}</div>
+          <div class="pi-meta">${it.quantidade} ${escapeHtml(it.unidade)} · ${formatBRL(it.preco)}/${escapeHtml(it.unidade)}${it.isNew ? ' · novo ingrediente' : ''}</div>
+        </div>
+        <div class="pi-right">
+          <span class="mono">${formatBRL(it.preco * it.quantidade)}</span>
+          <button class="x-btn" data-idx="${idx}" title="Remover">✕</button>
+        </div>
+      </li>
+    `).join('');
+    ul.querySelectorAll('.x-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pendingProduct.itens.splice(Number(btn.dataset.idx), 1);
+        renderPendingList();
+      });
+    });
+  }
+
+  document.getElementById('btnNovoProduto').addEventListener('click', () => {
+    pendingProduct = { nome: '', itens: [] };
+    document.getElementById('prodNome').value = '';
+    renderPendingList();
+  });
+
+  document.getElementById('btnSalvarProduto').addEventListener('click', async () => {
+    const nome = document.getElementById('prodNome').value.trim();
+    if(!nome){ toast('Dê um nome ao produto antes de salvar.', true); return; }
+    if(pendingProduct.itens.length === 0){ toast('Adicione ao menos um ingrediente.', true); return; }
+    if(!CONFIG.API_URL){ toast('Configure a URL da API primeiro.', true); return; }
+
+    setSync('syncing');
+    try{
+      // 1. cria ingredientes novos primeiro, para termos o ID de cada um
+      for(const it of pendingProduct.itens){
+        if(it.isNew){
+          const created = await Api.call('addIngredient', { nome: it.nome, unidade: it.unidade, preco: it.preco });
+          it.ingredienteId = created.id;
+        }
+      }
+      // 2. cria o produto já com a lista de itens (ingredienteId + quantidade)
+      await Api.call('addProduct', {
+        nome,
+        precoVenda: 0,
+        itens: pendingProduct.itens.map(it => ({ ingredienteId: it.ingredienteId, quantidade: it.quantidade }))
+      });
+
+      toast('Produto salvo com sucesso.');
+      pendingProduct = { nome: '', itens: [] };
+      document.getElementById('prodNome').value = '';
+      renderPendingList();
+      await loadAll();
+      switchTab('dashboard');
+    }catch(err){
+      setSync('error');
+      toast(err.message, true);
+    }
+  });
+
+/* =========================================================================
+   TAB: DADOS
+   ========================================================================= */
+  function renderDados(){
+    const tbody = document.getElementById('ingredientesTableBody');
+    if(state.ingredientes.length === 0){
+      tbody.innerHTML = '<tr><td colspan="4" class="empty-note">Nenhum ingrediente cadastrado ainda.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = state.ingredientes.map(ing => `
+      <tr data-id="${ing.id}">
+        <td><input class="ing-nome" value="${escapeHtml(ing.nome)}"></td>
+        <td>
+          <select class="ing-unidade">
+            ${['kg','g','l','ml','unidade','dz','pacote','caixa'].map(u => `<option value="${u}" ${u===ing.unidade?'selected':''}>${u}</option>`).join('')}
+          </select>
+        </td>
+        <td><input class="ing-preco mono" type="number" step="0.01" min="0" value="${ing.preco}"></td>
+        <td class="col-actions">
+          <button class="btn btn-primary btn-sm btn-save-ing">Salvar</button>
+          <button class="btn btn-danger btn-sm btn-del-ing">Excluir</button>
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('.btn-save-ing').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const tr = e.target.closest('tr');
+        const id = tr.dataset.id;
+        const nome = tr.querySelector('.ing-nome').value.trim();
+        const unidade = tr.querySelector('.ing-unidade').value;
+        const preco = parseFloat(tr.querySelector('.ing-preco').value);
+        if(!nome || isNaN(preco) || preco < 0){ toast('Preencha nome e preço corretamente.', true); return; }
+        setSync('syncing');
+        try{
+          await Api.call('updateIngredient', { id, nome, unidade, preco });
+          toast('Ingrediente atualizado. Custos recalculados.');
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    tbody.querySelectorAll('.btn-del-ing').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const tr = e.target.closest('tr');
+        const id = tr.dataset.id;
+        const emUso = state.itens.some(it => it.ingredienteId === id);
+        const msg = emUso
+          ? 'Este ingrediente está sendo usado em produtos cadastrados. Excluir também vai removê-lo desses produtos. Continuar?'
+          : 'Excluir este ingrediente?';
+        if(!confirm(msg)) return;
+        setSync('syncing');
+        try{
+          await Api.call('deleteIngredient', { id });
+          toast('Ingrediente excluído.');
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+  }
+
+  document.getElementById('btnAddIngredienteDados').addEventListener('click', async () => {
+    const nome = document.getElementById('novoIngNome').value.trim();
+    const unidade = document.getElementById('novoIngUnidade').value;
+    const preco = parseFloat(document.getElementById('novoIngPreco').value);
+    if(!nome){ toast('Informe o nome do ingrediente.', true); return; }
+    if(isNaN(preco) || preco < 0){ toast('Informe um preço válido.', true); return; }
+    if(!CONFIG.API_URL){ toast('Configure a URL da API primeiro.', true); return; }
+    setSync('syncing');
+    try{
+      await Api.call('addIngredient', { nome, unidade, preco });
+      toast('Ingrediente adicionado.');
+      document.getElementById('novoIngNome').value = '';
+      document.getElementById('novoIngPreco').value = '';
+      await loadAll();
+    }catch(err){ setSync('error'); toast(err.message, true); }
+  });
+
+/* =========================================================================
+   TAB: DASHBOARD
+   ========================================================================= */
+  function computeProduto(produto){
+    const itens = state.itens
+      .filter(it => it.produtoId === produto.id)
+      .map(it => {
+        const ing = findIngredienteById(it.ingredienteId);
+        const custo = ing ? (Number(ing.preco) || 0) * (Number(it.quantidade) || 0) : 0;
+        return { ...it, ingrediente: ing, custo };
+      });
+    const custoTotal = itens.reduce((acc, it) => acc + it.custo, 0);
+    const precoVenda = Number(produto.precoVenda) || 0;
+    const cmvPct = precoVenda > 0 ? (custoTotal / precoVenda) * 100 : null;
+    return { itens, custoTotal, cmvPct };
+  }
+
+  function cmvBadgeClass(pct){
+    if(pct === null) return 'badge-neutral';
+    if(pct <= CONFIG.CMV_LOW_MAX) return 'badge-good';
+    if(pct <= CONFIG.CMV_MID_MAX) return 'badge-warn';
+    return 'badge-bad';
+  }
+
+  function renderDashboard(){
+    const wrap = document.getElementById('dashboardList');
+    if(state.produtos.length === 0){
+      wrap.innerHTML = '<div class="card empty-note">Nenhum produto salvo ainda. Cadastre um na aba Cadastro.</div>';
+      return;
+    }
+    wrap.innerHTML = state.produtos.map(produto => {
+      const { itens, custoTotal, cmvPct } = computeProduto(produto);
+      const isOpen = openReceipts.has(produto.id);
+      return `
+      <div class="receipt ${isOpen ? 'open' : ''}" data-id="${produto.id}">
+        <div class="receipt-head" data-toggle="${produto.id}">
+          <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="rh-name">
+            <h3>${escapeHtml(produto.nome)}</h3>
+            <div class="rh-sub">Custo: <span class="mono">${formatBRL(custoTotal)}</span> · ${itens.length} ingrediente(s)</div>
+          </div>
+          <div class="rh-num" onclick="event.stopPropagation()">
+            <label>Preço de venda</label>
+            <input type="number" step="0.01" min="0" class="preco-venda-input mono" value="${produto.precoVenda || 0}" data-id="${produto.id}">
+          </div>
+          <span class="badge ${cmvBadgeClass(cmvPct)}">CMV ${formatPct(cmvPct)}</span>
+        </div>
+        <div class="receipt-body">
+          ${itens.map(it => `
+            <div class="item-row" data-item-id="${it.id}">
+              <div class="it-name">
+                <div class="it-title">${it.ingrediente ? escapeHtml(it.ingrediente.nome) : '(ingrediente removido)'}</div>
+                <div class="it-unit">${it.ingrediente ? escapeHtml(it.ingrediente.unidade) : ''} · relevância no custo: ${formatPct(custoTotal > 0 ? (it.custo / custoTotal) * 100 : 0)}</div>
+                <div class="pct-bar-wrap"><div class="pct-bar" style="width:${custoTotal > 0 ? Math.min(100, (it.custo/custoTotal)*100) : 0}%"></div></div>
+              </div>
+              <div class="it-qty"><input type="number" step="0.001" min="0" value="${it.quantidade}" class="item-qty-input" data-item-id="${it.id}"></div>
+              <div class="it-cost mono">${formatBRL(it.custo)}</div>
+              <button class="x-btn btn-del-item" data-item-id="${it.id}" title="Remover ingrediente do produto">✕</button>
+            </div>
+          `).join('')}
+          <div class="add-item-form">
+            <input type="text" class="new-item-nome" list="ingredientesDatalist" placeholder="Nome do ingrediente" data-produto-id="${produto.id}">
+            <input type="number" step="0.001" min="0" class="new-item-qtd" placeholder="Porção" style="width:90px;">
+            <button class="btn btn-ghost btn-sm btn-add-item" data-produto-id="${produto.id}">Adicionar ingrediente</button>
+          </div>
+          <div class="receipt-foot">
+            <button class="btn btn-danger btn-sm btn-del-produto" data-id="${produto.id}">Excluir produto</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // toggle expand/collapse
+    wrap.querySelectorAll('[data-toggle]').forEach(head => {
+      head.addEventListener('click', () => {
+        const id = head.dataset.toggle;
+        if(openReceipts.has(id)) openReceipts.delete(id); else openReceipts.add(id);
+        renderDashboard();
+      });
+    });
+
+    // preço de venda inline edit
+    wrap.querySelectorAll('.preco-venda-input').forEach(input => {
+      input.addEventListener('change', async () => {
+        const id = input.dataset.id;
+        const produto = state.produtos.find(p => p.id === id);
+        const precoVenda = parseFloat(input.value) || 0;
+        setSync('syncing');
+        try{
+          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda });
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    // quantidade do item inline edit
+    wrap.querySelectorAll('.item-qty-input').forEach(input => {
+      input.addEventListener('change', async () => {
+        const itemId = input.dataset.itemId;
+        const quantidade = parseFloat(input.value);
+        if(isNaN(quantidade) || quantidade < 0){ toast('Porção inválida.', true); return; }
+        setSync('syncing');
+        try{
+          await Api.call('updateProdutoItem', { id: itemId, quantidade });
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    // remover item (só o ingrediente, mantém o produto)
+    wrap.querySelectorAll('.btn-del-item').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm('Remover este ingrediente do produto?')) return;
+        setSync('syncing');
+        try{
+          await Api.call('deleteProdutoItem', { id: btn.dataset.itemId });
+          toast('Ingrediente removido do produto.');
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    // adicionar ingrediente a um produto existente
+    wrap.querySelectorAll('.btn-add-item').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const produtoId = btn.dataset.produtoId;
+        const container = btn.closest('.add-item-form');
+        const nome = container.querySelector('.new-item-nome').value.trim();
+        const qtd = parseFloat(container.querySelector('.new-item-qtd').value);
+        if(!nome){ toast('Informe o nome do ingrediente.', true); return; }
+        if(isNaN(qtd) || qtd <= 0){ toast('Informe a porção usada.', true); return; }
+        const existing = findIngredienteByName(nome);
+        setSync('syncing');
+        try{
+          let ingredienteId = existing ? existing.id : null;
+          if(!existing){
+            const created = await Api.call('addIngredient', { nome, unidade: 'unidade', preco: 0 });
+            ingredienteId = created.id;
+            toast('Novo ingrediente criado com preço R$ 0,00 — ajuste o preço na aba Dados.');
+          }
+          await Api.call('addProdutoItem', { produtoId, ingredienteId, quantidade: qtd });
+          openReceipts.add(produtoId);
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    // excluir produto inteiro
+    wrap.querySelectorAll('.btn-del-produto').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm('Excluir este produto e todos os seus ingredientes associados?')) return;
+        setSync('syncing');
+        try{
+          await Api.call('deleteProduct', { id: btn.dataset.id });
+          toast('Produto excluído.');
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+  }
+
+/* =========================================================================
+   NAVEGAÇÃO / TABS
+   ========================================================================= */
+  const TAB_TITLES = { cadastro: 'Cadastro de produto', dados: 'Ingredientes e preços', dashboard: 'Dashboard de produtos' };
+  function switchTab(tab){
+    document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.id === 'tab-' + tab));
+    document.querySelectorAll('.nav-btn[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+    document.querySelectorAll('.tabbar-mobile button[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+    document.getElementById('topbarTitle').textContent = TAB_TITLES[tab];
+  }
+  document.querySelectorAll('.nav-btn[data-tab], .tabbar-mobile button[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+/* =========================================================================
+   LOGIN / LOGOUT
+   ========================================================================= */
+  function showLogin(){
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('tabbarMobile').classList.add('hidden');
+  }
+  function showApp(){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('tabbarMobile').classList.remove('hidden');
+    updateApiBanner();
+    loadAll();
+  }
+
+  document.getElementById('btnLogin').addEventListener('click', () => {
+    const email = document.getElementById('loginEmail').value.trim();
+    const code = document.getElementById('loginCode').value;
+    const result = AuthService.login(email, code);
+    const banner = document.getElementById('loginBanner');
+    if(result.ok){
+      banner.classList.add('hidden');
+      showApp();
+    } else {
+      banner.textContent = result.error;
+      banner.classList.remove('hidden');
+    }
+  });
+  document.getElementById('loginCode').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') document.getElementById('btnLogin').click();
+  });
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    AuthService.logout();
+    showLogin();
+  });
+
+/* =========================================================================
+   MODAL DE CONFIGURAÇÃO DA API
+   ========================================================================= */
+  function openConfigModal(){
+    document.getElementById('configApiUrl').value = CONFIG.API_URL;
+    document.getElementById('configModalOverlay').classList.remove('hidden');
+  }
+  function closeConfigModal(){ document.getElementById('configModalOverlay').classList.add('hidden'); }
+  document.getElementById('btnConfig').addEventListener('click', openConfigModal);
+  document.getElementById('btnOpenConfigFromLogin').addEventListener('click', openConfigModal);
+  document.getElementById('btnOpenConfigFromBanner').addEventListener('click', openConfigModal);
+  document.getElementById('btnCloseConfig').addEventListener('click', closeConfigModal);
+  document.getElementById('btnSaveConfig').addEventListener('click', () => {
+    const url = document.getElementById('configApiUrl').value.trim();
+    CONFIG.API_URL = url;
+    updateApiBanner();
+    closeConfigModal();
+    toast('URL da API salva.');
+    if(document.getElementById('app').classList.contains('hidden') === false) loadAll();
+  });
+
+/* =========================================================================
+   UTIL
+   ========================================================================= */
+  function escapeHtml(str){
+    return String(str ?? '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+/* =========================================================================
+   BOOT
+   ========================================================================= */
+  renderPendingList();
+  if(AuthService.isLoggedIn()) showApp(); else showLogin();
+</script>
+</body>
+</html>
