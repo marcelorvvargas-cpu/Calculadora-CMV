@@ -154,6 +154,22 @@
   .role-badge.admin{background:var(--warn-soft); color:#7A4E1B;}
   .role-badge.usuario{background:#EDEBDE; color:var(--ink-soft);}
 
+  /* Busca e filtros (Dados e Dashboard) */
+  .filter-bar{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px;}
+  .filter-bar .field{margin-bottom:0; flex:1; min-width:160px;}
+  .filter-bar .field.small{flex:0 0 140px; min-width:120px;}
+  .tag-categoria{display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 7px; border-radius:5px; margin-left:8px; vertical-align:middle;}
+  .tag-categoria.sub_receita{background:var(--warn-soft); color:#7A4E1B;}
+  .tag-categoria.produto{background:var(--brand-soft); color:var(--brand-dark);}
+
+  /* Campo de dinheiro com prefixo R$ */
+  .money-input-wrap{position:relative; display:inline-block;}
+  .money-input-wrap .money-prefix{
+    position:absolute; left:9px; top:50%; transform:translateY(-50%);
+    font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; pointer-events:none;
+  }
+  .money-input-wrap input{padding-left:28px !important;}
+
   /* Dashboard receipt cards */
   .receipt{
     background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:16px;
@@ -184,6 +200,17 @@
   .badge-warn{background:var(--warn-soft); color:#7A4E1B;}
   .badge-bad{background:var(--danger-soft); color:var(--danger);}
   .badge-neutral{background:#EDEBDE; color:var(--ink-soft);}
+
+  .cmv-stat{text-align:center; flex-shrink:0;}
+  .cmv-stat .cmv-label{display:block; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin-bottom:4px;}
+  .cmv-value{
+    font-size:26px; font-weight:800; font-family:'IBM Plex Mono',monospace; line-height:1;
+    padding:8px 16px; border-radius:12px; display:inline-block;
+  }
+  .cmv-value.badge-good{background:var(--good-soft); color:var(--brand-dark);}
+  .cmv-value.badge-warn{background:var(--warn-soft); color:#7A4E1B;}
+  .cmv-value.badge-bad{background:var(--danger-soft); color:var(--danger);}
+  .cmv-value.badge-neutral{background:#EDEBDE; color:var(--ink-soft); font-size:18px;}
   .chevron{transition:transform .18s ease; color:var(--ink-soft); flex-shrink:0;}
   .receipt.open .chevron{transform:rotate(180deg);}
 
@@ -313,6 +340,13 @@
       <section id="tab-cadastro" class="tab active">
         <div class="card">
           <h3>1. Dados do produto</h3>
+          <div class="field" style="margin-bottom:14px;">
+            <label>Tipo</label>
+            <div class="segmented" id="prodCategoriaToggle">
+              <button type="button" class="seg-btn active" data-categoria="produto">Produto final</button>
+              <button type="button" class="seg-btn" data-categoria="sub_receita">Sub-receita (uso interno)</button>
+            </div>
+          </div>
           <div class="grid-3" style="grid-template-columns:2fr 1fr 1fr;">
             <div class="field" style="margin-bottom:0;">
               <label>Nome do produto</label>
@@ -327,7 +361,7 @@
               <input id="prodUnidadeRendimento" type="text" placeholder="Ex: unidade, kg, fatia" value="unidade">
             </div>
           </div>
-          <p class="hint" style="margin-top:10px;">Rendimento é quanto essa receita produz — ex: "essa massa de pão rende 8 unidades". Isso é o que permite usar este produto como item dentro de outro (ex: 1 pão dentro de um sanduíche), calculando o custo por unidade automaticamente.</p>
+          <p class="hint" style="margin-top:10px;">Rendimento é quanto essa receita produz — ex: "essa massa de pão rende 8 unidades". "Sub-receita" é para itens de uso interno, tipo um molho ou massa que você usa dentro de vários produtos — ele aparece no Dashboard, mas não precisa ter preço de venda próprio.</p>
         </div>
 
         <div class="card">
@@ -391,7 +425,10 @@
       <section id="tab-dados" class="tab">
         <div class="card">
           <h3>Ingredientes cadastrados</h3>
-          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Edite o preço aqui sempre que comprar por um valor diferente — o custo de todos os produtos que usam esse ingrediente (direta ou indiretamente, via sub-receitas) é recalculado automaticamente.</p>
+          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Edite o preço aqui sempre que comprar por um valor diferente — o custo de todos os produtos que usam esse ingrediente (direta ou indiretamente, via sub-receitas) é recalculado automaticamente. A lista fica sempre em ordem alfabética.</p>
+          <div class="field" style="margin-bottom:14px; max-width:320px;">
+            <input id="ingredientesSearch" type="text" placeholder="🔎 Buscar ingrediente por nome…">
+          </div>
           <div style="overflow-x:auto;">
           <table class="data-table">
             <thead>
@@ -428,6 +465,24 @@
 
       <!-- ---- TAB: DASHBOARD ---- -->
       <section id="tab-dashboard" class="tab">
+        <div class="card filter-bar">
+          <div class="field">
+            <label>Buscar por nome</label>
+            <input id="dashSearch" type="text" placeholder="🔎 Nome do produto…">
+          </div>
+          <div class="field small">
+            <label>CMV mínimo (%)</label>
+            <input id="dashCmvMin" type="number" step="0.1" min="0" placeholder="Ex: 30">
+          </div>
+          <div class="field small">
+            <label>Tipo</label>
+            <select id="dashCategoriaFiltro">
+              <option value="todos">Todos</option>
+              <option value="produto">Só produtos finais</option>
+              <option value="sub_receita">Só sub-receitas</option>
+            </select>
+          </div>
+        </div>
         <div id="dashboardList"></div>
       </section>
 
@@ -584,6 +639,11 @@
   let pendingProduct = { itens: [] }; // itens: {tipoItem, itemId, isNew, nome, unidade, preco, quantidade}
   let openReceipts = new Set();
   let cadTipoAtual = 'ingrediente';
+  let prodCategoriaAtual = 'produto';
+  let dadosSearchTerm = '';
+  let dashSearchTerm = '';
+  let dashCmvMin = null;
+  let dashCategoriaFiltro = 'todos';
 
 /* =========================================================================
    HELPERS
@@ -668,8 +728,11 @@
 
     const custoTotal = itens.reduce((acc, it) => acc + it.custo, 0);
     const precoVenda = Number(produto.precoVenda) || 0;
-    const cmvPct = precoVenda > 0 ? (custoTotal / precoVenda) * 100 : null;
     const custoUnitario = custoTotal / (Number(produto.rendimento) || 1);
+    // Importante: o CMV compara o preço de venda (que é o preço de UMA unidade
+    // do rendimento, ex: 1 pão) com o custo por unidade — não com o custo
+    // total da receita inteira (que pode render várias unidades).
+    const cmvPct = precoVenda > 0 ? (custoUnitario / precoVenda) * 100 : null;
     return { itens, custoTotal, cmvPct, custoUnitario };
   }
 
@@ -738,6 +801,14 @@
       document.getElementById('cadIngredienteFields').classList.toggle('hidden', cadTipoAtual !== 'ingrediente');
       document.getElementById('cadProdutoFields').classList.toggle('hidden', cadTipoAtual !== 'produto');
       document.getElementById('cadProdutoPreview').classList.add('hidden');
+    });
+  });
+
+  document.querySelectorAll('#prodCategoriaToggle .seg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#prodCategoriaToggle .seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      prodCategoriaAtual = btn.dataset.categoria;
     });
   });
 
@@ -855,6 +926,8 @@
     document.getElementById('prodNome').value = '';
     document.getElementById('prodRendimento').value = '1';
     document.getElementById('prodUnidadeRendimento').value = 'unidade';
+    prodCategoriaAtual = 'produto';
+    document.querySelectorAll('#prodCategoriaToggle .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.categoria === 'produto'));
     renderPendingList();
   }
 
@@ -875,7 +948,7 @@
         }
       }
       await Api.call('addProduct', {
-        nome, precoVenda: 0, rendimento, unidadeRendimento,
+        nome, precoVenda: 0, rendimento, unidadeRendimento, categoria: prodCategoriaAtual,
         itens: pendingProduct.itens.map(it => ({ tipoItem: it.tipoItem, itemId: it.itemId, quantidade: it.quantidade }))
       });
 
@@ -894,11 +967,21 @@
    ========================================================================= */
   function renderDados(){
     const tbody = document.getElementById('ingredientesTableBody');
+    const termo = dadosSearchTerm.trim().toLowerCase();
+    const lista = state.ingredientes
+      .filter(i => !termo || i.nome.toLowerCase().includes(termo))
+      .slice()
+      .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+
     if(state.ingredientes.length === 0){
       tbody.innerHTML = '<tr><td colspan="4" class="empty-note">Nenhum ingrediente cadastrado ainda.</td></tr>';
       return;
     }
-    tbody.innerHTML = state.ingredientes.map(ing => `
+    if(lista.length === 0){
+      tbody.innerHTML = '<tr><td colspan="4" class="empty-note">Nenhum ingrediente encontrado para essa busca.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lista.map(ing => `
       <tr data-id="${ing.id}">
         <td><input class="ing-nome" value="${escapeHtml(ing.nome)}"></td>
         <td>
@@ -950,6 +1033,11 @@
     });
   }
 
+  document.getElementById('ingredientesSearch').addEventListener('input', (e) => {
+    dadosSearchTerm = e.target.value;
+    renderDados();
+  });
+
   document.getElementById('btnAddIngredienteDados').addEventListener('click', async () => {
     const nome = document.getElementById('novoIngNome').value.trim();
     const unidade = document.getElementById('novoIngUnidade').value;
@@ -977,14 +1065,48 @@
     return 'badge-bad';
   }
 
+  document.getElementById('dashSearch').addEventListener('input', (e) => {
+    dashSearchTerm = e.target.value;
+    renderDashboard();
+  });
+  document.getElementById('dashCmvMin').addEventListener('input', (e) => {
+    const v = parseFloat(e.target.value);
+    dashCmvMin = isNaN(v) ? null : v;
+    renderDashboard();
+  });
+  document.getElementById('dashCategoriaFiltro').addEventListener('change', (e) => {
+    dashCategoriaFiltro = e.target.value;
+    renderDashboard();
+  });
+
   function renderDashboard(){
     const wrap = document.getElementById('dashboardList');
     if(state.produtos.length === 0){
       wrap.innerHTML = '<div class="card empty-note">Nenhum produto salvo ainda. Cadastre um na aba Cadastro.</div>';
       return;
     }
-    wrap.innerHTML = state.produtos.map(produto => {
-      const { itens, custoTotal, cmvPct, custoUnitario } = computeProduto(produto);
+
+    const termo = dashSearchTerm.trim().toLowerCase();
+    let linhas = state.produtos.map(produto => ({ produto, computed: computeProduto(produto) }));
+
+    if(termo){
+      linhas = linhas.filter(l => l.produto.nome.toLowerCase().includes(termo));
+    }
+    if(dashCmvMin !== null && !isNaN(dashCmvMin)){
+      linhas = linhas.filter(l => l.computed.cmvPct !== null && l.computed.cmvPct >= dashCmvMin);
+    }
+    if(dashCategoriaFiltro !== 'todos'){
+      linhas = linhas.filter(l => (l.produto.categoria || 'produto') === dashCategoriaFiltro);
+    }
+    linhas.sort((a, b) => a.produto.nome.localeCompare(b.produto.nome, 'pt-BR'));
+
+    if(linhas.length === 0){
+      wrap.innerHTML = '<div class="card empty-note">Nenhum produto encontrado para esse filtro.</div>';
+      return;
+    }
+
+    wrap.innerHTML = linhas.map(({ produto, computed }) => {
+      const { itens, custoTotal, cmvPct, custoUnitario } = computed;
       const isOpen = openReceipts.has(produto.id);
 
       const produtosDisponiveis = state.produtos.filter(p => p.id !== produto.id && !introducesCycle(produto.id, p.id));
@@ -994,17 +1116,30 @@
         <div class="receipt-head" data-toggle="${produto.id}">
           <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="rh-name">
-            <h3>${escapeHtml(produto.nome)}</h3>
+            <h3>${escapeHtml(produto.nome)}<span class="tag-categoria ${produto.categoria}">${produto.categoria === 'sub_receita' ? 'Sub-receita' : 'Produto'}</span></h3>
             <div class="rh-sub">Custo total: <span class="mono">${formatBRL(custoTotal)}</span> · Custo/${escapeHtml(produto.unidadeRendimento)}: <span class="mono">${formatBRL(custoUnitario)}</span> · ${itens.length} item(ns)</div>
           </div>
           <div class="rh-num" onclick="event.stopPropagation()">
             <label>Preço de venda</label>
-            <input type="number" step="0.01" min="0" class="preco-venda-input mono" value="${produto.precoVenda || 0}" data-id="${produto.id}">
+            <div class="money-input-wrap">
+              <span class="money-prefix">R$</span>
+              <input type="number" step="0.01" min="0" class="preco-venda-input mono" value="${produto.precoVenda || 0}" data-id="${produto.id}">
+            </div>
           </div>
-          <span class="badge ${cmvBadgeClass(cmvPct)}">CMV ${formatPct(cmvPct)}</span>
+          <div class="cmv-stat">
+            <span class="cmv-label">CMV</span>
+            <span class="cmv-value ${cmvBadgeClass(cmvPct)}">${formatPct(cmvPct)}</span>
+          </div>
         </div>
         <div class="receipt-body">
           <div class="yield-panel">
+            <div class="field-inline">
+              <label>Tipo</label>
+              <select class="categoria-select" data-id="${produto.id}" style="width:150px; padding:6px 8px; border:1px solid var(--border); border-radius:7px; font-size:13px; background:var(--paper);">
+                <option value="produto" ${produto.categoria !== 'sub_receita' ? 'selected' : ''}>Produto final</option>
+                <option value="sub_receita" ${produto.categoria === 'sub_receita' ? 'selected' : ''}>Sub-receita (uso interno)</option>
+              </select>
+            </div>
             <div class="field-inline">
               <label>Rendimento</label>
               <input type="number" step="0.001" min="0.001" class="rendimento-input" data-id="${produto.id}" value="${produto.rendimento}">
@@ -1085,22 +1220,23 @@
         const precoVenda = parseFloat(input.value) || 0;
         setSync('syncing');
         try{
-          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda, rendimento: produto.rendimento, unidadeRendimento: produto.unidadeRendimento });
+          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda, rendimento: produto.rendimento, unidadeRendimento: produto.unidadeRendimento, categoria: produto.categoria });
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
     });
 
-    wrap.querySelectorAll('.rendimento-input, .unidade-rendimento-input').forEach(input => {
+    wrap.querySelectorAll('.rendimento-input, .unidade-rendimento-input, .categoria-select').forEach(input => {
       input.addEventListener('change', async () => {
         const id = input.dataset.id;
         const produto = findProdutoById(id);
         const card = wrap.querySelector(`.receipt[data-id="${id}"]`);
         const rendimento = parseFloat(card.querySelector('.rendimento-input').value) || 1;
         const unidadeRendimento = card.querySelector('.unidade-rendimento-input').value.trim() || 'unidade';
+        const categoria = card.querySelector('.categoria-select').value;
         setSync('syncing');
         try{
-          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda: produto.precoVenda, rendimento, unidadeRendimento });
+          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda: produto.precoVenda, rendimento, unidadeRendimento, categoria });
           openReceipts.add(id);
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
