@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>CMV. — Custo de Mercadoria Vendida</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#1F2A24;
-    --ink-soft:#4B564E;
-    --paper:#EEEEDF;
+    --ink:#111827;
+    --ink-soft:#6B7280;
+    --paper:#F5F6F8;
     --surface:#FFFFFF;
-    --border:#D9D3BE;
-    --brand:#2F6F5E;
-    --brand-dark:#1E4A3D;
-    --brand-soft:#DCE9E2;
-    --warn:#C97A2B;
-    --warn-soft:#F5E3CC;
-    --danger:#B23A34;
-    --danger-soft:#F3DAD7;
-    --good:#2F6F5E;
-    --good-soft:#DCE9E2;
-    --radius:14px;
-    --shadow: 0 1px 2px rgba(31,42,36,0.06), 0 8px 24px -12px rgba(31,42,36,0.18);
+    --border:#E5E7EB;
+    --brand:#0F6657;
+    --brand-dark:#0A4A40;
+    --brand-soft:#DDEEEA;
+    --warn:#B45309;
+    --warn-soft:#FBEDD9;
+    --danger:#B91C1C;
+    --danger-soft:#FBE3E3;
+    --good:#0F6657;
+    --good-soft:#DDEEEA;
+    --radius:12px;
+    --shadow: 0 1px 2px rgba(17,24,39,0.04), 0 4px 16px -6px rgba(17,24,39,0.10);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -34,7 +34,7 @@
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
   }
-  h1,h2,h3{font-family:'Fraunces',serif; margin:0; letter-spacing:-0.01em;}
+  h1,h2,h3{font-family:'Sora',system-ui,sans-serif; margin:0; letter-spacing:-0.01em; font-weight:700;}
   .mono{font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums;}
   .hidden{display:none !important;}
   button{font-family:inherit; cursor:pointer;}
@@ -44,8 +44,8 @@
   .login-screen{
     min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
     background:
-      radial-gradient(circle at 15% 20%, rgba(47,111,94,0.10), transparent 45%),
-      radial-gradient(circle at 85% 80%, rgba(201,122,43,0.10), transparent 45%),
+      radial-gradient(circle at 12% 15%, rgba(15,102,87,0.07), transparent 42%),
+      radial-gradient(circle at 88% 85%, rgba(15,102,87,0.05), transparent 42%),
       var(--paper);
   }
   .login-card{
@@ -127,10 +127,10 @@
   .seg-btn + .seg-btn{border-left:1px solid var(--border);}
 
   /* pending ingredient list (cadastro) */
-  .pending-list{list-style:none; margin:14px 0 0; padding:0; border-top:1px dashed var(--border);}
+  .pending-list{list-style:none; margin:14px 0 0; padding:0; border-top:1px solid var(--border);}
   .pending-list li{
     display:flex; align-items:center; justify-content:space-between; padding:10px 2px;
-    border-bottom:1px dashed var(--border); font-size:14px;
+    border-bottom:1px solid var(--border); font-size:14px;
   }
   .pending-list .pi-name{font-weight:600;}
   .pending-list .pi-meta{color:var(--ink-soft); font-size:12px;}
@@ -172,14 +172,11 @@
 
   /* Dashboard receipt cards */
   .receipt{
-    background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:16px;
-    box-shadow:var(--shadow); position:relative; overflow:hidden;
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:14px;
+    box-shadow:var(--shadow); position:relative; overflow:hidden; border-top:3px solid var(--brand);
+    transition:box-shadow .15s ease;
   }
-  .receipt::before{
-    content:""; position:absolute; top:0; left:0; right:0; height:6px;
-    background-image: radial-gradient(circle, var(--paper) 3px, transparent 3.5px);
-    background-size:14px 12px; background-position:0 -6px;
-  }
+  .receipt:hover{box-shadow:0 2px 4px rgba(17,24,39,0.05), 0 10px 24px -8px rgba(17,24,39,0.14);}
   .receipt-head{
     display:flex; align-items:center; gap:14px; padding:20px 20px 16px; cursor:pointer;
   }
@@ -214,10 +211,10 @@
   .chevron{transition:transform .18s ease; color:var(--ink-soft); flex-shrink:0;}
   .receipt.open .chevron{transform:rotate(180deg);}
 
-  .receipt-body{display:none; padding:0 20px 20px; border-top:1px dashed var(--border);}
+  .receipt-body{display:none; padding:0 20px 20px; border-top:1px solid var(--border);}
   .receipt.open .receipt-body{display:block;}
 
-  .yield-panel{display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap; padding:16px 0; border-bottom:1px dashed var(--border);}
+  .yield-panel{display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap; padding:16px 0; border-bottom:1px solid var(--border);}
   .yield-panel .field-inline{display:flex; flex-direction:column; gap:4px;}
   .yield-panel .field-inline label{font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);}
   .yield-panel .field-inline input{width:100px; padding:6px 8px; border:1px solid var(--border); border-radius:7px; font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--paper);}
@@ -225,7 +222,7 @@
   .yield-cost strong{color:var(--brand-dark); font-family:'IBM Plex Mono',monospace;}
 
   .item-row{
-    display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed var(--border); font-size:13px;
+    display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px;
   }
   .item-row .it-name{flex:1; min-width:0;}
   .item-row .it-name .it-title{font-weight:600;}
@@ -1133,6 +1130,10 @@
         </div>
         <div class="receipt-body">
           <div class="yield-panel">
+            <div class="field-inline" style="flex:1; min-width:180px;">
+              <label>Nome do produto</label>
+              <input type="text" class="nome-produto-input" data-id="${produto.id}" value="${escapeHtml(produto.nome)}" style="width:100%;">
+            </div>
             <div class="field-inline">
               <label>Tipo</label>
               <select class="categoria-select" data-id="${produto.id}" style="width:150px; padding:6px 8px; border:1px solid var(--border); border-radius:7px; font-size:13px; background:var(--paper);">
@@ -1226,19 +1227,21 @@
       });
     });
 
-    wrap.querySelectorAll('.rendimento-input, .unidade-rendimento-input, .categoria-select').forEach(input => {
+    wrap.querySelectorAll('.nome-produto-input, .rendimento-input, .unidade-rendimento-input, .categoria-select').forEach(input => {
       input.addEventListener('change', async () => {
         const id = input.dataset.id;
         const produto = findProdutoById(id);
         const card = wrap.querySelector(`.receipt[data-id="${id}"]`);
+        const nome = card.querySelector('.nome-produto-input').value.trim() || produto.nome;
         const rendimento = parseFloat(card.querySelector('.rendimento-input').value) || 1;
         const unidadeRendimento = card.querySelector('.unidade-rendimento-input').value.trim() || 'unidade';
         const categoria = card.querySelector('.categoria-select').value;
         setSync('syncing');
         try{
-          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda: produto.precoVenda, rendimento, unidadeRendimento, categoria });
+          await Api.call('updateProduct', { id, nome, precoVenda: produto.precoVenda, rendimento, unidadeRendimento, categoria });
           openReceipts.add(id);
           await loadAll();
+          toast('Produto atualizado.');
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
     });
