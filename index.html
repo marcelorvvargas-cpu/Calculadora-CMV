@@ -547,15 +547,31 @@
 <script>
 /* =========================================================================
    CONFIG
-   API_URL é salva em localStorage (é só um endereço de configuração, não é
-   dado do negócio — os dados reais sempre ficam na planilha).
+   IMPORTANTE — COLOQUE AQUI A URL DO SEU APPS SCRIPT:
+   Troque o valor de DEFAULT_API_URL abaixo pela URL do seu "Aplicativo da
+   Web" (a que termina em /exec). Assim, TODO MUNDO que abrir o link do app
+   (celular, computador, qualquer pessoa) já entra direto na tela de login,
+   sem precisar configurar nada manualmente.
+   Isso é seguro: essa URL sozinha não dá acesso a nada — toda ação exige
+   e-mail e senha válidos (checados na planilha).
+   Se um dia você recriar a implantação do zero (gerando uma URL nova),
+   troque o valor aqui e suba o arquivo de novo.
    ========================================================================= */
+  const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycby_mcP3fqI7wcO9gcI2GIRK6elmzcf9jkb8avx-ozeI6YmY8TEFg3Au0FpfpLbPsy1f/exec'; // ex: 'https://script.google.com/macros/s/AKfycb.../exec'
+
   const CONFIG = {
-    get API_URL(){ return localStorage.getItem('cmv_api_url') || ''; },
+    // Se alguém usar o botão "Configurar API" para testar outra planilha,
+    // isso fica salvo só naquele navegador e tem prioridade sobre o padrão.
+    get API_URL(){ return localStorage.getItem('cmv_api_url') || DEFAULT_API_URL; },
     set API_URL(v){ localStorage.setItem('cmv_api_url', v); },
     CMV_LOW_MAX: 30,
     CMV_MID_MAX: 45
   };
+
+  // Considera configurada só se for uma URL de verdade (não o texto de exemplo).
+  function isApiConfigured(){
+    return /^https:\/\//.test(CONFIG.API_URL);
+  }
 
 /* =========================================================================
    AUTH SERVICE
@@ -596,8 +612,8 @@
    ========================================================================= */
   const Api = {
     async _post(action, payload){
-      if(!CONFIG.API_URL){
-        throw new Error('Configure a URL da API primeiro (botão "Configurar API").');
+      if(!isApiConfigured()){
+        throw new Error('A URL da API ainda não foi configurada neste app (fale com o administrador).');
       }
       const res = await fetch(CONFIG.API_URL, {
         method: 'POST',
@@ -676,7 +692,7 @@
     else { label.textContent = 'Sincronizado'; }
   }
   function updateApiBanner(){
-    document.getElementById('apiBanner').classList.toggle('hidden', !!CONFIG.API_URL);
+    document.getElementById('apiBanner').classList.toggle('hidden', isApiConfigured());
   }
   function escapeHtml(str){
     return String(str ?? '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -747,7 +763,7 @@
    CARREGAR DADOS
    ========================================================================= */
   async function loadAll(){
-    if(!CONFIG.API_URL){ updateApiBanner(); return; }
+    if(!isApiConfigured()){ updateApiBanner(); return; }
     setSync('syncing');
     try{
       const data = await Api.call('getAll');
@@ -934,7 +950,7 @@
     const unidadeRendimento = document.getElementById('prodUnidadeRendimento').value.trim() || 'unidade';
     if(!nome){ toast('Dê um nome ao produto antes de salvar.', true); return; }
     if(pendingProduct.itens.length === 0){ toast('Adicione ao menos um item à receita.', true); return; }
-    if(!CONFIG.API_URL){ toast('Configure a URL da API primeiro.', true); return; }
+    if(!isApiConfigured()){ toast('A URL da API ainda não foi configurada neste app.', true); return; }
 
     setSync('syncing');
     try{
@@ -1041,7 +1057,7 @@
     const preco = parseFloat(document.getElementById('novoIngPreco').value);
     if(!nome){ toast('Informe o nome do ingrediente.', true); return; }
     if(isNaN(preco) || preco < 0){ toast('Informe um preço válido.', true); return; }
-    if(!CONFIG.API_URL){ toast('Configure a URL da API primeiro.', true); return; }
+    if(!isApiConfigured()){ toast('A URL da API ainda não foi configurada neste app.', true); return; }
     setSync('syncing');
     try{
       await Api.call('addIngredient', { nome, unidade, preco });
