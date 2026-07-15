@@ -302,8 +302,7 @@
         <input id="loginSenha" type="password" placeholder="••••••••" autocomplete="current-password">
       </div>
       <button class="btn btn-primary" id="btnLogin">Entrar</button>
-      <button class="btn btn-ghost" id="btnOpenConfigFromLogin" style="width:100%; margin-top:8px;">⚙ Configurar API</button>
-      <p class="hint">O login agora é multiusuário: cada pessoa tem seu próprio e-mail e senha, cadastrados por um administrador dentro do app (aba "Usuários"). As senhas ficam com hash na planilha — nunca em texto puro. Módulo isolado em <code>AuthService</code>, pronto para trocar por Supabase Auth no futuro.</p>
+      <p class="hint">O login é multiusuário: cada pessoa tem seu próprio e-mail e senha, cadastrados por um administrador dentro do app (aba "Usuários"). As senhas ficam com hash na planilha — nunca em texto puro.</p>
     </div>
   </div>
 
@@ -1469,7 +1468,6 @@
   }
   function closeConfigModal(){ document.getElementById('configModalOverlay').classList.add('hidden'); }
   document.getElementById('btnConfig').addEventListener('click', openConfigModal);
-  document.getElementById('btnOpenConfigFromLogin').addEventListener('click', openConfigModal);
   document.getElementById('btnOpenConfigFromBanner').addEventListener('click', openConfigModal);
   document.getElementById('btnCloseConfig').addEventListener('click', closeConfigModal);
   document.getElementById('btnSaveConfig').addEventListener('click', () => {
