@@ -90,7 +90,7 @@
     width:220px; flex-shrink:0; background:var(--ink); color:#EFEDE3; display:flex; flex-direction:column;
     padding:22px 16px; gap:4px;
   }
-  .brand{font-family:'Fraunces',serif; font-size:26px; color:#fff; margin-bottom:22px; padding:0 6px;}
+  .brand{font-family:'Sora',system-ui,sans-serif; font-size:24px; font-weight:800; color:#fff; margin-bottom:22px; padding:0 6px;}
   .brand span{color:var(--warn);}
   .nav-btn{
     text-align:left; background:none; border:none; color:#C9CFC7; padding:11px 12px; border-radius:9px;
@@ -120,7 +120,7 @@
   .grid-3{display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:10px; align-items:end;}
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
 
-  /* segmented toggle (ingrediente vs produto) */
+  /* segmented toggle (ingrediente vs variante) */
   .segmented{display:inline-flex; border:1px solid var(--border); border-radius:9px; overflow:hidden; margin-bottom:16px;}
   .seg-btn{background:var(--paper); border:none; padding:9px 14px; font-size:13px; font-weight:600; color:var(--ink-soft);}
   .seg-btn.active{background:var(--brand); color:#fff;}
@@ -170,7 +170,7 @@
   }
   .money-input-wrap input{padding-left:28px !important;}
 
-  /* Dashboard receipt cards */
+  /* Dashboard: card do PRODUTO (família) */
   .receipt{
     background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:14px;
     box-shadow:var(--shadow); position:relative; overflow:hidden; border-top:3px solid var(--brand);
@@ -204,17 +204,25 @@
     font-size:26px; font-weight:800; font-family:'IBM Plex Mono',monospace; line-height:1;
     padding:8px 16px; border-radius:12px; display:inline-block;
   }
+  .cmv-value.sm{font-size:16px; padding:5px 10px; border-radius:9px;}
   .cmv-value.badge-good{background:var(--good-soft); color:var(--brand-dark);}
   .cmv-value.badge-warn{background:var(--warn-soft); color:#7A4E1B;}
   .cmv-value.badge-bad{background:var(--danger-soft); color:var(--danger);}
   .cmv-value.badge-neutral{background:#EDEBDE; color:var(--ink-soft); font-size:18px;}
+  .cmv-value.sm.badge-neutral{font-size:14px;}
   .chevron{transition:transform .18s ease; color:var(--ink-soft); flex-shrink:0;}
-  .receipt.open .chevron{transform:rotate(180deg);}
+  .receipt.open > .receipt-head .chevron{transform:rotate(180deg);}
+  .variante-block.open > .variante-head .chevron-sm{transform:rotate(180deg);}
 
   .receipt-body{display:none; padding:0 20px 20px; border-top:1px solid var(--border);}
-  .receipt.open .receipt-body{display:block;}
+  .receipt.open > .receipt-body{display:block;}
 
-  .yield-panel{display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap; padding:16px 0; border-bottom:1px solid var(--border);}
+  .produto-meta-panel{display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap; padding:16px 0; border-bottom:1px solid var(--border); margin-bottom:14px;}
+  .produto-meta-panel .field-inline{display:flex; flex-direction:column; gap:4px;}
+  .produto-meta-panel .field-inline label{font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);}
+  .produto-meta-panel input, .produto-meta-panel select{padding:7px 9px; border:1px solid var(--border); border-radius:7px; font-size:13px; background:var(--paper);}
+
+  .yield-panel{display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap; padding:14px 0; border-bottom:1px solid var(--border);}
   .yield-panel .field-inline{display:flex; flex-direction:column; gap:4px;}
   .yield-panel .field-inline label{font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);}
   .yield-panel .field-inline input{width:100px; padding:6px 8px; border:1px solid var(--border); border-radius:7px; font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--paper);}
@@ -237,6 +245,29 @@
   .add-item-form .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
   .add-item-form input, .add-item-form select{padding:7px 8px; border:1px solid var(--border); border-radius:7px; font-size:13px; background:var(--paper);}
   .preview-note{font-size:11px; color:var(--ink-soft); margin-top:6px;}
+
+  /* Blocos de VARIANTE dentro de um produto com múltiplos tamanhos */
+  .variantes-list{display:flex; flex-direction:column; gap:10px; margin-bottom:14px;}
+  .variante-block{
+    background:var(--paper); border:1px solid var(--border); border-radius:9px; overflow:hidden;
+  }
+  .variante-head{display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; flex-wrap:wrap;}
+  .variante-head .chevron-sm{transition:transform .18s ease; color:var(--ink-soft); flex-shrink:0; width:14px; height:14px;}
+  .variante-head .variante-nome-input{
+    flex:1; min-width:100px; font-weight:600; font-size:14px; border:1px solid transparent; background:transparent;
+    padding:6px 8px; border-radius:6px;
+  }
+  .variante-head .variante-nome-input:hover, .variante-head .variante-nome-input:focus{border-color:var(--border); background:var(--surface);}
+  .variante-detail{display:none; padding:0 14px 14px; border-top:1px solid var(--border); background:var(--surface);}
+  .variante-block.open .variante-detail{display:block;}
+  .variante-foot{display:flex; justify-content:flex-end; padding-top:10px;}
+  .add-variante-form{
+    background:var(--brand-soft); border:1px dashed var(--brand); border-radius:9px; padding:14px; margin-bottom:14px;
+  }
+  .add-variante-form h4{font-size:13px; margin:0 0 10px; color:var(--brand-dark); font-weight:700;}
+  .add-variante-form .row{display:flex; gap:8px; flex-wrap:wrap;}
+  .add-variante-form input{padding:7px 9px; border:1px solid var(--border); border-radius:7px; font-size:13px; background:var(--surface);}
+  .add-variante-toggle-row{margin-bottom:10px;}
 
   /* Toast & modal */
   .toast{
@@ -282,6 +313,7 @@
     .receipt-head{flex-wrap:wrap;}
     .rh-num{order:3; width:50%;}
     .yield-cost{margin-left:0; width:100%;}
+    .variante-head .rh-num{width:auto;}
   }
 </style>
 </head>
@@ -346,25 +378,33 @@
           <div class="grid-3" style="grid-template-columns:2fr 1fr 1fr;">
             <div class="field" style="margin-bottom:0;">
               <label>Nome do produto</label>
-              <input id="prodNome" type="text" placeholder="Ex: Bolo de cenoura 1kg">
+              <input id="prodNome" type="text" placeholder="Ex: Paraíso (açaí)">
+            </div>
+          </div>
+
+          <h3 style="margin-top:22px;">2. Primeira variação (tamanho/versão)</h3>
+          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Se esse produto tiver mais de um tamanho (ex: 300ml, 500ml, 700ml), cadastre o primeiro aqui — os outros você adiciona depois direto no Dashboard, dentro do card do produto. Se for um produto só, pode deixar o nome como "Padrão".</p>
+          <div class="grid-3" style="grid-template-columns:1.3fr 1fr 1fr;">
+            <div class="field" style="margin-bottom:0;">
+              <label>Nome da variação</label>
+              <input id="varNome" type="text" placeholder="Ex: 300ml" value="Padrão">
             </div>
             <div class="field" style="margin-bottom:0;">
               <label>Rendimento da receita</label>
-              <input id="prodRendimento" type="number" step="0.001" min="0.001" value="1">
+              <input id="varRendimento" type="number" step="0.001" min="0.001" value="1">
             </div>
             <div class="field" style="margin-bottom:0;">
               <label>Unidade do rendimento</label>
-              <input id="prodUnidadeRendimento" type="text" placeholder="Ex: unidade, kg, fatia" value="unidade">
+              <input id="varUnidadeRendimento" type="text" placeholder="Ex: unidade, kg, copo" value="unidade">
             </div>
           </div>
-          <p class="hint" style="margin-top:10px;">Rendimento é quanto essa receita produz — ex: "essa massa de pão rende 8 unidades". "Sub-receita" é para itens de uso interno, tipo um molho ou massa que você usa dentro de vários produtos — ele aparece no Dashboard, mas não precisa ter preço de venda próprio.</p>
         </div>
 
         <div class="card">
-          <h3>2. Adicionar item à receita</h3>
+          <h3>3. Adicionar item à receita</h3>
           <div class="segmented" data-toggle-group="cadastro">
             <button type="button" class="seg-btn active" data-tipo="ingrediente">Ingrediente</button>
-            <button type="button" class="seg-btn" data-tipo="produto">Produto já cadastrado (sub-receita)</button>
+            <button type="button" class="seg-btn" data-tipo="variante">Produto já cadastrado (sub-receita)</button>
           </div>
 
           <div id="cadIngredienteFields" class="grid-3">
@@ -391,20 +431,20 @@
             </div>
             <button class="btn btn-primary btn-sm" id="btnAddIng" style="height:41px;">Adicionar</button>
           </div>
-          <p id="ingExistsNote" class="hint hidden">Ingrediente já cadastrado — preço e unidade vêm da aba <strong>Dados</strong>. Para alterar o preço, edite lá (a mudança afeta todos os produtos que o usam).</p>
+          <p id="ingExistsNote" class="hint hidden">Ingrediente já cadastrado — preço e unidade vêm da aba <strong>Dados</strong>. Para alterar o preço, edite lá (a mudança afeta todas as receitas que o usam).</p>
 
-          <div id="cadProdutoFields" class="grid-3 hidden" style="grid-template-columns:2fr 1fr auto;">
+          <div id="cadVarianteFields" class="grid-3 hidden" style="grid-template-columns:2fr 1fr auto;">
             <div class="field" style="margin-bottom:0;">
-              <label>Produto</label>
-              <select id="cadProdutoSelect"><option value="">Selecione um produto já cadastrado…</option></select>
+              <label>Produto — variação</label>
+              <select id="cadVarianteSelect"><option value="">Selecione…</option></select>
             </div>
             <div class="field" style="margin-bottom:0;">
               <label>Quantidade usada</label>
-              <input id="cadProdutoQtd" type="number" step="0.001" min="0" placeholder="Ex: 1">
+              <input id="cadVarianteQtd" type="number" step="0.001" min="0" placeholder="Ex: 1">
             </div>
-            <button class="btn btn-primary btn-sm" id="btnAddProdutoItem" style="height:41px;">Adicionar</button>
+            <button class="btn btn-primary btn-sm" id="btnAddVarianteItem" style="height:41px;">Adicionar</button>
           </div>
-          <p id="cadProdutoPreview" class="preview-note hidden"></p>
+          <p id="cadVariantePreview" class="preview-note hidden"></p>
 
           <ul class="pending-list" id="pendingList">
             <li class="empty-note">Nenhum item adicionado ainda.</li>
@@ -421,7 +461,7 @@
       <section id="tab-dados" class="tab">
         <div class="card">
           <h3>Ingredientes cadastrados</h3>
-          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Edite o preço aqui sempre que comprar por um valor diferente — o custo de todos os produtos que usam esse ingrediente (direta ou indiretamente, via sub-receitas) é recalculado automaticamente. A lista fica sempre em ordem alfabética.</p>
+          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Edite o preço aqui sempre que comprar por um valor diferente — o custo de todas as receitas que usam esse ingrediente (direta ou indiretamente, via sub-receitas) é recalculado automaticamente. A lista fica sempre em ordem alfabética.</p>
           <div class="field" style="margin-bottom:14px; max-width:320px;">
             <input id="ingredientesSearch" type="text" placeholder="🔎 Buscar ingrediente por nome…">
           </div>
@@ -531,7 +571,7 @@
   <div id="configModalOverlay" class="modal-overlay hidden">
     <div class="modal">
       <h3>Configurar planilha</h3>
-      <p>Cole aqui a URL do Google Apps Script publicado como "Aplicativo da Web". Fica salva apenas neste navegador.</p>
+      <p>Cole aqui a URL do Google Apps Script publicado como "Aplicativo da Web". Fica salva apenas neste navegador (tem prioridade sobre a URL padrão do app).</p>
       <div class="field">
         <label>URL da API</label>
         <input id="configApiUrl" type="text" placeholder="https://script.google.com/macros/s/.../exec">
@@ -548,43 +588,29 @@
    CONFIG
    IMPORTANTE — COLOQUE AQUI A URL DO SEU APPS SCRIPT:
    Troque o valor de DEFAULT_API_URL abaixo pela URL do seu "Aplicativo da
-   Web" (a que termina em /exec). Assim, TODO MUNDO que abrir o link do app
-   (celular, computador, qualquer pessoa) já entra direto na tela de login,
-   sem precisar configurar nada manualmente.
-   Isso é seguro: essa URL sozinha não dá acesso a nada — toda ação exige
-   e-mail e senha válidos (checados na planilha).
-   Se um dia você recriar a implantação do zero (gerando uma URL nova),
-   troque o valor aqui e suba o arquivo de novo.
+   Web" (a que termina em /exec). Assim, todo mundo que abrir o link do app
+   já entra direto na tela de login, sem precisar configurar nada.
    ========================================================================= */
   const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycby_mcP3fqI7wcO9gcI2GIRK6elmzcf9jkb8avx-ozeI6YmY8TEFg3Au0FpfpLbPsy1f/exec'; // ex: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const CONFIG = {
-    // Se alguém usar o botão "Configurar API" para testar outra planilha,
-    // isso fica salvo só naquele navegador e tem prioridade sobre o padrão.
     get API_URL(){ return localStorage.getItem('cmv_api_url') || DEFAULT_API_URL; },
     set API_URL(v){ localStorage.setItem('cmv_api_url', v); },
     CMV_LOW_MAX: 30,
     CMV_MID_MAX: 45
   };
 
-  // Considera configurada só se for uma URL de verdade (não o texto de exemplo).
   function isApiConfigured(){
     return /^https:\/\//.test(CONFIG.API_URL);
   }
 
 /* =========================================================================
-   AUTH SERVICE
-   Módulo isolado de autenticação. Hoje faz login contra a aba "Usuarios" da
-   planilha (via Apps Script), recebendo um token de sessão temporário. Fica
-   guardado em sessionStorage (não é dado de negócio, é só a sessão do
-   navegador). Para migrar para Supabase no futuro: troque os métodos
-   login()/logout()/getUser()/isLoggedIn() pelas chamadas do supabase.auth —
-   nenhum outro lugar do app precisa mudar, pois tudo passa por AuthService.
+   AUTH SERVICE — módulo isolado, ver notas em versões anteriores.
    ========================================================================= */
   const AuthService = {
     KEY: 'cmv_session',
     async login(email, senha){
-      const data = await Api.callRaw('login', { email, senha }); // {token, user}
+      const data = await Api.callRaw('login', { email, senha });
       sessionStorage.setItem(this.KEY, JSON.stringify(data));
       return data;
     },
@@ -604,10 +630,7 @@
   };
 
 /* =========================================================================
-   API — comunicação com o Google Apps Script
-   POST com Content-Type "text/plain" evita o preflight OPTIONS (o Apps
-   Script não responde bem a ele). O token de sessão é anexado
-   automaticamente em toda chamada autenticada via Api.call().
+   API
    ========================================================================= */
   const Api = {
     async _post(action, payload){
@@ -625,7 +648,6 @@
       if(!json.ok) throw new Error(json.error || 'Erro desconhecido na API.');
       return json.data;
     },
-    // chamada autenticada: anexa o token de sessão automaticamente
     async call(action, payload = {}){
       const token = AuthService.getToken();
       try{
@@ -638,7 +660,6 @@
         throw err;
       }
     },
-    // chamada sem token (usada só para login/logout)
     async callRaw(action, payload = {}){
       return await this._post(action, payload);
     }
@@ -647,9 +668,10 @@
 /* =========================================================================
    ESTADO
    ========================================================================= */
-  let state = { ingredientes: [], produtos: [], itens: [], usuarios: [] };
+  let state = { ingredientes: [], produtos: [], variantes: [], itens: [], usuarios: [] };
   let pendingProduct = { itens: [] }; // itens: {tipoItem, itemId, isNew, nome, unidade, preco, quantidade}
-  let openReceipts = new Set();
+  let openReceipts = new Set();   // produtos (família) expandidos na Dashboard
+  let openVariantes = new Set();  // variantes expandidas dentro de um produto agrupado
   let cadTipoAtual = 'ingrediente';
   let prodCategoriaAtual = 'produto';
   let dadosSearchTerm = '';
@@ -674,6 +696,8 @@
   }
   function findIngredienteById(id){ return state.ingredientes.find(i => i.id === id); }
   function findProdutoById(id){ return state.produtos.find(p => p.id === id); }
+  function findVarianteById(id){ return state.variantes.find(v => v.id === id); }
+  function variantesDoProduto(produtoId){ return state.variantes.filter(v => v.produtoId === produtoId); }
   function toast(msg, isErr){
     const el = document.getElementById('toast');
     el.textContent = msg;
@@ -698,61 +722,59 @@
   }
 
 /* =========================================================================
-   CÁLCULO DE CUSTO (recursivo — suporta produto usado como ingrediente)
+   CÁLCULO DE CUSTO (recursivo — uma variante pode usar outra como sub-receita)
    ========================================================================= */
-  // Evita loop infinito caso A use B e B (direta ou indiretamente) use A.
-  function introducesCycle(parentId, candidateId){
-    if(!parentId) return false;
-    if(candidateId === parentId) return true;
+  function introducesCycle(parentVarianteId, candidateVarianteId){
+    if(!parentVarianteId) return false;
+    if(candidateVarianteId === parentVarianteId) return true;
     const visited = new Set();
-    function dfs(pid){
-      if(pid === parentId) return true;
-      if(visited.has(pid)) return false;
-      visited.add(pid);
-      const deps = state.itens.filter(it => it.produtoId === pid && it.tipoItem === 'produto');
+    function dfs(vid){
+      if(vid === parentVarianteId) return true;
+      if(visited.has(vid)) return false;
+      visited.add(vid);
+      const deps = state.itens.filter(it => it.varianteId === vid && it.tipoItem === 'variante');
       return deps.some(d => dfs(d.itemId));
     }
-    return dfs(candidateId);
+    return dfs(candidateVarianteId);
   }
 
-  function computeProduto(produto, visiting){
+  function computeVariante(variante, visiting){
     visiting = visiting || new Set();
-    if(visiting.has(produto.id)){
+    if(!variante || visiting.has(variante.id)){
       return { itens: [], custoTotal: 0, cmvPct: null, custoUnitario: 0, cyclic: true };
     }
     const nextVisiting = new Set(visiting);
-    nextVisiting.add(produto.id);
+    nextVisiting.add(variante.id);
 
-    const itens = state.itens.filter(it => it.produtoId === produto.id).map(it => {
-      if(it.tipoItem === 'produto'){
-        const subProduto = findProdutoById(it.itemId);
-        if(!subProduto) return { ...it, nomeExibicao: '(produto removido)', unidadeExibicao: '', custo: 0, isSubProduto: true };
-        const sub = computeProduto(subProduto, nextVisiting);
-        const custoUnitario = sub.custoTotal / (Number(subProduto.rendimento) || 1);
+    const itens = state.itens.filter(it => it.varianteId === variante.id).map(it => {
+      if(it.tipoItem === 'variante'){
+        const subVariante = findVarianteById(it.itemId);
+        if(!subVariante) return { ...it, nomeExibicao: '(variação removida)', unidadeExibicao: '', custo: 0, isSubVariante: true };
+        const sub = computeVariante(subVariante, nextVisiting);
+        const custoUnitario = sub.custoTotal / (Number(subVariante.rendimento) || 1);
         const custo = custoUnitario * (Number(it.quantidade) || 0);
-        return { ...it, nomeExibicao: subProduto.nome, unidadeExibicao: subProduto.unidadeRendimento || 'unidade', custoUnitario, custo, isSubProduto: true };
+        const produtoPai = findProdutoById(subVariante.produtoId);
+        const nomeExibicao = produtoPai ? `${produtoPai.nome} — ${subVariante.nome}` : subVariante.nome;
+        return { ...it, nomeExibicao, unidadeExibicao: subVariante.unidadeRendimento || 'unidade', custoUnitario, custo, isSubVariante: true };
       } else {
         const ing = findIngredienteById(it.itemId);
         const custo = ing ? (Number(ing.preco) || 0) * (Number(it.quantidade) || 0) : 0;
-        return { ...it, nomeExibicao: ing ? ing.nome : '(ingrediente removido)', unidadeExibicao: ing ? ing.unidade : '', custo, isSubProduto: false };
+        return { ...it, nomeExibicao: ing ? ing.nome : '(ingrediente removido)', unidadeExibicao: ing ? ing.unidade : '', custo, isSubVariante: false };
       }
     });
 
     const custoTotal = itens.reduce((acc, it) => acc + it.custo, 0);
-    const precoVenda = Number(produto.precoVenda) || 0;
-    const custoUnitario = custoTotal / (Number(produto.rendimento) || 1);
-    // Importante: o CMV compara o preço de venda (que é o preço de UMA unidade
-    // do rendimento, ex: 1 pão) com o custo por unidade — não com o custo
-    // total da receita inteira (que pode render várias unidades).
+    const precoVenda = Number(variante.precoVenda) || 0;
+    const custoUnitario = custoTotal / (Number(variante.rendimento) || 1);
     const cmvPct = precoVenda > 0 ? (custoUnitario / precoVenda) * 100 : null;
     return { itens, custoTotal, cmvPct, custoUnitario };
   }
 
   function pendingItemCusto(it){
-    if(it.tipoItem === 'produto'){
-      const sub = findProdutoById(it.itemId);
+    if(it.tipoItem === 'variante'){
+      const sub = findVarianteById(it.itemId);
       if(!sub) return 0;
-      const comp = computeProduto(sub);
+      const comp = computeVariante(sub);
       return comp.custoUnitario * (Number(it.quantidade) || 0);
     }
     return (Number(it.preco) || 0) * (Number(it.quantidade) || 0);
@@ -768,6 +790,7 @@
       const data = await Api.call('getAll');
       state.ingredientes = data.ingredientes || [];
       state.produtos = data.produtos || [];
+      state.variantes = data.variantes || [];
       state.itens = data.itens || [];
       setSync('ok');
       renderAll();
@@ -798,23 +821,16 @@
     document.getElementById('ingredientesDatalist').innerHTML =
       state.ingredientes.map(i => `<option value="${escapeHtml(i.nome)}">`).join('');
 
-    const select = document.getElementById('cadProdutoSelect');
+    const select = document.getElementById('cadVarianteSelect');
     const current = select.value;
-    select.innerHTML = '<option value="">Selecione um produto já cadastrado…</option>' +
-      state.produtos.map(p => `<option value="${p.id}">${escapeHtml(p.nome)}</option>`).join('');
+    const opcoes = state.variantes.map(v => {
+      const produto = findProdutoById(v.produtoId);
+      const label = produto ? `${produto.nome} — ${v.nome}` : v.nome;
+      return `<option value="${v.id}">${escapeHtml(label)}</option>`;
+    }).join('');
+    select.innerHTML = '<option value="">Selecione…</option>' + opcoes;
     select.value = current;
   }
-
-  document.querySelectorAll('[data-toggle-group="cadastro"] .seg-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-toggle-group="cadastro"] .seg-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      cadTipoAtual = btn.dataset.tipo;
-      document.getElementById('cadIngredienteFields').classList.toggle('hidden', cadTipoAtual !== 'ingrediente');
-      document.getElementById('cadProdutoFields').classList.toggle('hidden', cadTipoAtual !== 'produto');
-      document.getElementById('cadProdutoPreview').classList.add('hidden');
-    });
-  });
 
   document.querySelectorAll('#prodCategoriaToggle .seg-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -824,12 +840,23 @@
     });
   });
 
-  document.getElementById('cadProdutoSelect').addEventListener('change', (e) => {
-    const preview = document.getElementById('cadProdutoPreview');
-    const produto = findProdutoById(e.target.value);
-    if(!produto){ preview.classList.add('hidden'); return; }
-    const comp = computeProduto(produto);
-    preview.textContent = `Custo estimado: ${formatBRL(comp.custoUnitario)} por ${produto.unidadeRendimento || 'unidade'}.`;
+  document.querySelectorAll('[data-toggle-group="cadastro"] .seg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-toggle-group="cadastro"] .seg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      cadTipoAtual = btn.dataset.tipo;
+      document.getElementById('cadIngredienteFields').classList.toggle('hidden', cadTipoAtual !== 'ingrediente');
+      document.getElementById('cadVarianteFields').classList.toggle('hidden', cadTipoAtual !== 'variante');
+      document.getElementById('cadVariantePreview').classList.add('hidden');
+    });
+  });
+
+  document.getElementById('cadVarianteSelect').addEventListener('change', (e) => {
+    const preview = document.getElementById('cadVariantePreview');
+    const variante = findVarianteById(e.target.value);
+    if(!variante){ preview.classList.add('hidden'); return; }
+    const comp = computeVariante(variante);
+    preview.textContent = `Custo estimado: ${formatBRL(comp.custoUnitario)} por ${variante.unidadeRendimento || 'unidade'}.`;
     preview.classList.remove('hidden');
   });
 
@@ -878,25 +905,26 @@
     renderPendingList();
   });
 
-  document.getElementById('btnAddProdutoItem').addEventListener('click', () => {
-    const produtoId = document.getElementById('cadProdutoSelect').value;
-    const qtd = parseFloat(document.getElementById('cadProdutoQtd').value);
-    const produto = findProdutoById(produtoId);
-    if(!produto){ toast('Selecione um produto cadastrado.', true); return; }
+  document.getElementById('btnAddVarianteItem').addEventListener('click', () => {
+    const varianteId = document.getElementById('cadVarianteSelect').value;
+    const qtd = parseFloat(document.getElementById('cadVarianteQtd').value);
+    const variante = findVarianteById(varianteId);
+    const produto = variante ? findProdutoById(variante.produtoId) : null;
+    if(!variante){ toast('Selecione um produto/variação cadastrado.', true); return; }
     if(isNaN(qtd) || qtd <= 0){ toast('Informe a quantidade usada.', true); return; }
 
     pendingProduct.itens.push({
-      tipoItem: 'produto',
-      itemId: produtoId,
+      tipoItem: 'variante',
+      itemId: varianteId,
       isNew: false,
-      nome: produto.nome,
-      unidade: produto.unidadeRendimento || 'unidade',
+      nome: produto ? `${produto.nome} — ${variante.nome}` : variante.nome,
+      unidade: variante.unidadeRendimento || 'unidade',
       quantidade: qtd
     });
 
-    document.getElementById('cadProdutoSelect').value = '';
-    document.getElementById('cadProdutoQtd').value = '';
-    document.getElementById('cadProdutoPreview').classList.add('hidden');
+    document.getElementById('cadVarianteSelect').value = '';
+    document.getElementById('cadVarianteQtd').value = '';
+    document.getElementById('cadVariantePreview').classList.add('hidden');
     renderPendingList();
   });
 
@@ -908,8 +936,8 @@
     }
     ul.innerHTML = pendingProduct.itens.map((it, idx) => {
       const custo = pendingItemCusto(it);
-      const subTag = it.tipoItem === 'produto' ? '<span class="tag-sub">sub-receita</span>' : '';
-      const meta = it.tipoItem === 'produto'
+      const subTag = it.tipoItem === 'variante' ? '<span class="tag-sub">sub-receita</span>' : '';
+      const meta = it.tipoItem === 'variante'
         ? `${it.quantidade} ${escapeHtml(it.unidade)}`
         : `${it.quantidade} ${escapeHtml(it.unidade)} · ${formatBRL(it.preco)}/${escapeHtml(it.unidade)}${it.isNew ? ' · novo ingrediente' : ''}`;
       return `
@@ -936,8 +964,9 @@
   function resetCadastroForm(){
     pendingProduct = { itens: [] };
     document.getElementById('prodNome').value = '';
-    document.getElementById('prodRendimento').value = '1';
-    document.getElementById('prodUnidadeRendimento').value = 'unidade';
+    document.getElementById('varNome').value = 'Padrão';
+    document.getElementById('varRendimento').value = '1';
+    document.getElementById('varUnidadeRendimento').value = 'unidade';
     prodCategoriaAtual = 'produto';
     document.querySelectorAll('#prodCategoriaToggle .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.categoria === 'produto'));
     renderPendingList();
@@ -945,8 +974,9 @@
 
   document.getElementById('btnSalvarProduto').addEventListener('click', async () => {
     const nome = document.getElementById('prodNome').value.trim();
-    const rendimento = parseFloat(document.getElementById('prodRendimento').value) || 1;
-    const unidadeRendimento = document.getElementById('prodUnidadeRendimento').value.trim() || 'unidade';
+    const varNome = document.getElementById('varNome').value.trim() || 'Padrão';
+    const rendimento = parseFloat(document.getElementById('varRendimento').value) || 1;
+    const unidadeRendimento = document.getElementById('varUnidadeRendimento').value.trim() || 'unidade';
     if(!nome){ toast('Dê um nome ao produto antes de salvar.', true); return; }
     if(pendingProduct.itens.length === 0){ toast('Adicione ao menos um item à receita.', true); return; }
     if(!isApiConfigured()){ toast('A URL da API ainda não foi configurada neste app.', true); return; }
@@ -959,8 +989,9 @@
           it.itemId = created.id;
         }
       }
-      await Api.call('addProduct', {
-        nome, precoVenda: 0, rendimento, unidadeRendimento, categoria: prodCategoriaAtual,
+      const produtoCriado = await Api.call('addProduct', { nome, categoria: prodCategoriaAtual });
+      await Api.call('addVariante', {
+        produtoId: produtoCriado.id, nome: varNome, precoVenda: 0, rendimento, unidadeRendimento,
         itens: pendingProduct.itens.map(it => ({ tipoItem: it.tipoItem, itemId: it.itemId, quantidade: it.quantidade }))
       });
 
@@ -1032,7 +1063,7 @@
         const id = tr.dataset.id;
         const emUso = state.itens.some(it => it.tipoItem === 'ingrediente' && it.itemId === id);
         const msg = emUso
-          ? 'Este ingrediente está sendo usado em produtos cadastrados. Excluir também vai removê-lo desses produtos. Continuar?'
+          ? 'Este ingrediente está sendo usado em receitas cadastradas. Excluir também vai removê-lo delas. Continuar?'
           : 'Excluir este ingrediente?';
         if(!confirm(msg)) return;
         setSync('syncing');
@@ -1091,6 +1122,65 @@
     renderDashboard();
   });
 
+  // Gera o HTML de "conteúdo de uma variante": painel de rendimento, lista de
+  // itens (ingredientes/sub-receitas) e o formulário para adicionar mais itens.
+  // Reaproveitado tanto no modo simples (1 variação) quanto agrupado (2+).
+  function renderVarianteConteudo(produto, variante){
+    const { itens, custoUnitario } = computeVariante(variante);
+    const custoTotal = itens.reduce((a, b) => a + b.custo, 0);
+    const variantesDisponiveis = state.variantes.filter(v => v.id !== variante.id && !introducesCycle(variante.id, v.id));
+
+    return `
+      <div class="yield-panel">
+        <div class="field-inline">
+          <label>Rendimento</label>
+          <input type="number" step="0.001" min="0.001" class="rendimento-input" data-variante-id="${variante.id}" value="${variante.rendimento}">
+        </div>
+        <div class="field-inline">
+          <label>Unidade do rendimento</label>
+          <input type="text" class="unidade-rendimento-input" data-variante-id="${variante.id}" value="${escapeHtml(variante.unidadeRendimento)}">
+        </div>
+        <div class="yield-cost">Custo por ${escapeHtml(variante.unidadeRendimento)}: <strong>${formatBRL(custoUnitario)}</strong></div>
+      </div>
+
+      ${itens.map(it => `
+        <div class="item-row" data-item-id="${it.id}">
+          <div class="it-name">
+            <div class="it-title">${escapeHtml(it.nomeExibicao)}${it.isSubVariante ? '<span class="tag-sub">sub-receita</span>' : ''}</div>
+            <div class="it-unit">${escapeHtml(it.unidadeExibicao)} · relevância no custo: ${formatPct(custoTotal > 0 ? (it.custo / custoTotal) * 100 : 0)}</div>
+            <div class="pct-bar-wrap"><div class="pct-bar" style="width:${custoTotal > 0 ? Math.min(100, (it.custo/custoTotal)*100) : 0}%"></div></div>
+          </div>
+          <div class="it-qty"><input type="number" step="0.001" min="0" value="${it.quantidade}" class="item-qty-input" data-item-id="${it.id}"></div>
+          <div class="it-cost mono">${formatBRL(it.custo)}</div>
+          <button class="x-btn btn-del-item" data-item-id="${it.id}" title="Remover item da receita">✕</button>
+        </div>
+      `).join('')}
+
+      <div class="add-item-form" data-variante-id="${variante.id}">
+        <div class="segmented" data-toggle-group="dash-${variante.id}">
+          <button type="button" class="seg-btn active" data-tipo="ingrediente">Ingrediente</button>
+          <button type="button" class="seg-btn" data-tipo="variante">Produto (sub-receita)</button>
+        </div>
+        <div class="row dash-ingrediente-fields">
+          <input type="text" class="new-item-nome" list="ingredientesDatalist" placeholder="Nome do ingrediente">
+          <input type="number" step="0.001" min="0" class="new-item-qtd" placeholder="Porção" style="width:90px;">
+          <button class="btn btn-ghost btn-sm btn-add-item">Adicionar</button>
+        </div>
+        <div class="row dash-variante-fields hidden">
+          <select class="new-item-variante-select">
+            <option value="">Selecione produto — variação…</option>
+            ${variantesDisponiveis.map(v => {
+              const p = findProdutoById(v.produtoId);
+              const label = p ? `${p.nome} — ${v.nome}` : v.nome;
+              return `<option value="${v.id}">${escapeHtml(label)}</option>`;
+            }).join('')}
+          </select>
+          <input type="number" step="0.001" min="0" class="new-item-variante-qtd" placeholder="Qtd." style="width:90px;">
+          <button class="btn btn-ghost btn-sm btn-add-variante-item">Adicionar</button>
+        </div>
+      </div>`;
+  }
+
   function renderDashboard(){
     const wrap = document.getElementById('dashboardList');
     if(state.produtos.length === 0){
@@ -1099,13 +1189,17 @@
     }
 
     const termo = dashSearchTerm.trim().toLowerCase();
-    let linhas = state.produtos.map(produto => ({ produto, computed: computeProduto(produto) }));
+    let linhas = state.produtos.map(produto => {
+      const variantes = variantesDoProduto(produto.id);
+      const comps = variantes.map(v => computeVariante(v));
+      return { produto, variantes, comps };
+    });
 
     if(termo){
       linhas = linhas.filter(l => l.produto.nome.toLowerCase().includes(termo));
     }
     if(dashCmvMin !== null && !isNaN(dashCmvMin)){
-      linhas = linhas.filter(l => l.computed.cmvPct !== null && l.computed.cmvPct >= dashCmvMin);
+      linhas = linhas.filter(l => l.comps.some(c => c.cmvPct !== null && c.cmvPct >= dashCmvMin));
     }
     if(dashCategoriaFiltro !== 'todos'){
       linhas = linhas.filter(l => (l.produto.categoria || 'produto') === dashCategoriaFiltro);
@@ -1117,91 +1211,121 @@
       return;
     }
 
-    wrap.innerHTML = linhas.map(({ produto, computed }) => {
-      const { itens, custoTotal, cmvPct, custoUnitario } = computed;
+    wrap.innerHTML = linhas.map(({ produto, variantes, comps }) => {
       const isOpen = openReceipts.has(produto.id);
+      const categoriaTag = `<span class="tag-categoria ${produto.categoria}">${produto.categoria === 'sub_receita' ? 'Sub-receita' : 'Produto'}</span>`;
 
-      const produtosDisponiveis = state.produtos.filter(p => p.id !== produto.id && !introducesCycle(produto.id, p.id));
+      const metaPanel = `
+        <div class="produto-meta-panel">
+          <div class="field-inline" style="flex:1; min-width:180px;">
+            <label>Nome do produto</label>
+            <input type="text" class="nome-produto-input" data-id="${produto.id}" value="${escapeHtml(produto.nome)}" style="width:100%;">
+          </div>
+          <div class="field-inline">
+            <label>Tipo</label>
+            <select class="categoria-select" data-id="${produto.id}" style="width:170px;">
+              <option value="produto" ${produto.categoria !== 'sub_receita' ? 'selected' : ''}>Produto final</option>
+              <option value="sub_receita" ${produto.categoria === 'sub_receita' ? 'selected' : ''}>Sub-receita (uso interno)</option>
+            </select>
+          </div>
+        </div>`;
+
+      const addVarianteForm = `
+        <div class="add-variante-form" data-produto-id="${produto.id}">
+          <h4>+ Adicionar variação (tamanho/versão)</h4>
+          <div class="row">
+            <input type="text" class="nova-var-nome" placeholder="Nome (ex: 500ml)">
+            <input type="number" step="0.001" min="0.001" class="nova-var-rendimento" placeholder="Rendimento" value="1" style="width:100px;">
+            <input type="text" class="nova-var-unidade" placeholder="Unidade" value="unidade" style="width:100px;">
+            <button class="btn btn-primary btn-sm btn-add-variante">Adicionar variação</button>
+          </div>
+        </div>`;
+
+      if(variantes.length <= 1){
+        const variante = variantes[0];
+        const comp = variante ? comps[0] : { custoTotal: 0, cmvPct: null, custoUnitario: 0, itens: [] };
+        return `
+        <div class="receipt ${isOpen ? 'open' : ''}" data-id="${produto.id}">
+          <div class="receipt-head" data-toggle="${produto.id}">
+            <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="rh-name">
+              <h3>${escapeHtml(produto.nome)}${categoriaTag}</h3>
+              <div class="rh-sub">${variante ? `Custo/${escapeHtml(variante.unidadeRendimento)}: <span class="mono">${formatBRL(comp.custoUnitario)}</span> · ${comp.itens ? comp.itens.length : 0} item(ns)` : 'Nenhuma variação cadastrada'}</div>
+            </div>
+            ${variante ? `
+            <div class="rh-num" onclick="event.stopPropagation()">
+              <label>Preço de venda</label>
+              <div class="money-input-wrap">
+                <span class="money-prefix">R$</span>
+                <input type="number" step="0.01" min="0" class="preco-venda-input mono" value="${variante.precoVenda || 0}" data-variante-id="${variante.id}">
+              </div>
+            </div>
+            <div class="cmv-stat">
+              <span class="cmv-label">CMV</span>
+              <span class="cmv-value ${cmvBadgeClass(comp.cmvPct)}">${formatPct(comp.cmvPct)}</span>
+            </div>` : ''}
+          </div>
+          <div class="receipt-body">
+            ${metaPanel}
+            ${variante ? renderVarianteConteudo(produto, variante) : '<p class="empty-note">Nenhuma variação cadastrada ainda — adicione uma abaixo.</p>'}
+            <div class="add-variante-toggle-row" style="margin-top:14px;">
+              <button class="btn btn-ghost btn-sm btn-toggle-add-variante" data-id="${produto.id}">+ Adicionar outra variação (tamanho)</button>
+            </div>
+            <div class="add-variante-wrap hidden" data-id="${produto.id}">${addVarianteForm}</div>
+            <div class="receipt-foot">
+              <button class="btn btn-danger btn-sm btn-del-produto" data-id="${produto.id}">Excluir produto</button>
+              <span></span>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      const cmvValidos = comps.map(c => c.cmvPct).filter(v => v !== null);
+      const resumoCmv = cmvValidos.length > 0
+        ? `CMV de ${formatPct(Math.min(...cmvValidos))} a ${formatPct(Math.max(...cmvValidos))}`
+        : 'CMV: defina o preço de venda em cada variação';
+
+      const variantesHtml = variantes.map((variante, idx) => {
+        const comp = comps[idx];
+        const isVOpen = openVariantes.has(variante.id);
+        return `
+        <div class="variante-block ${isVOpen ? 'open' : ''}" data-variante-id="${variante.id}">
+          <div class="variante-head" data-toggle-variante="${variante.id}">
+            <svg class="chevron-sm" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input type="text" class="variante-nome-input" data-variante-id="${variante.id}" value="${escapeHtml(variante.nome)}" onclick="event.stopPropagation()">
+            <div class="rh-num" onclick="event.stopPropagation()">
+              <div class="money-input-wrap">
+                <span class="money-prefix">R$</span>
+                <input type="number" step="0.01" min="0" class="preco-venda-input mono" value="${variante.precoVenda || 0}" data-variante-id="${variante.id}" style="width:88px;">
+              </div>
+            </div>
+            <span class="cmv-value sm ${cmvBadgeClass(comp.cmvPct)}">${formatPct(comp.cmvPct)}</span>
+          </div>
+          <div class="variante-detail">
+            ${renderVarianteConteudo(produto, variante)}
+            <div class="variante-foot">
+              <button class="btn btn-danger btn-sm btn-del-variante" data-id="${variante.id}">Excluir esta variação</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
 
       return `
       <div class="receipt ${isOpen ? 'open' : ''}" data-id="${produto.id}">
         <div class="receipt-head" data-toggle="${produto.id}">
           <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="rh-name">
-            <h3>${escapeHtml(produto.nome)}<span class="tag-categoria ${produto.categoria}">${produto.categoria === 'sub_receita' ? 'Sub-receita' : 'Produto'}</span></h3>
-            <div class="rh-sub">Custo total: <span class="mono">${formatBRL(custoTotal)}</span> · Custo/${escapeHtml(produto.unidadeRendimento)}: <span class="mono">${formatBRL(custoUnitario)}</span> · ${itens.length} item(ns)</div>
-          </div>
-          <div class="rh-num" onclick="event.stopPropagation()">
-            <label>Preço de venda</label>
-            <div class="money-input-wrap">
-              <span class="money-prefix">R$</span>
-              <input type="number" step="0.01" min="0" class="preco-venda-input mono" value="${produto.precoVenda || 0}" data-id="${produto.id}">
-            </div>
-          </div>
-          <div class="cmv-stat">
-            <span class="cmv-label">CMV</span>
-            <span class="cmv-value ${cmvBadgeClass(cmvPct)}">${formatPct(cmvPct)}</span>
+            <h3>${escapeHtml(produto.nome)}${categoriaTag}</h3>
+            <div class="rh-sub">${variantes.length} variações · ${resumoCmv}</div>
           </div>
         </div>
         <div class="receipt-body">
-          <div class="yield-panel">
-            <div class="field-inline" style="flex:1; min-width:180px;">
-              <label>Nome do produto</label>
-              <input type="text" class="nome-produto-input" data-id="${produto.id}" value="${escapeHtml(produto.nome)}" style="width:100%;">
-            </div>
-            <div class="field-inline">
-              <label>Tipo</label>
-              <select class="categoria-select" data-id="${produto.id}" style="width:150px; padding:6px 8px; border:1px solid var(--border); border-radius:7px; font-size:13px; background:var(--paper);">
-                <option value="produto" ${produto.categoria !== 'sub_receita' ? 'selected' : ''}>Produto final</option>
-                <option value="sub_receita" ${produto.categoria === 'sub_receita' ? 'selected' : ''}>Sub-receita (uso interno)</option>
-              </select>
-            </div>
-            <div class="field-inline">
-              <label>Rendimento</label>
-              <input type="number" step="0.001" min="0.001" class="rendimento-input" data-id="${produto.id}" value="${produto.rendimento}">
-            </div>
-            <div class="field-inline">
-              <label>Unidade do rendimento</label>
-              <input type="text" class="unidade-rendimento-input" data-id="${produto.id}" value="${escapeHtml(produto.unidadeRendimento)}">
-            </div>
-            <div class="yield-cost">Custo por ${escapeHtml(produto.unidadeRendimento)}: <strong>${formatBRL(custoUnitario)}</strong></div>
-          </div>
-
-          ${itens.map(it => `
-            <div class="item-row" data-item-id="${it.id}">
-              <div class="it-name">
-                <div class="it-title">${escapeHtml(it.nomeExibicao)}${it.isSubProduto ? '<span class="tag-sub">sub-receita</span>' : ''}</div>
-                <div class="it-unit">${escapeHtml(it.unidadeExibicao)} · relevância no custo: ${formatPct(custoTotal > 0 ? (it.custo / custoTotal) * 100 : 0)}</div>
-                <div class="pct-bar-wrap"><div class="pct-bar" style="width:${custoTotal > 0 ? Math.min(100, (it.custo/custoTotal)*100) : 0}%"></div></div>
-              </div>
-              <div class="it-qty"><input type="number" step="0.001" min="0" value="${it.quantidade}" class="item-qty-input" data-item-id="${it.id}"></div>
-              <div class="it-cost mono">${formatBRL(it.custo)}</div>
-              <button class="x-btn btn-del-item" data-item-id="${it.id}" title="Remover item do produto">✕</button>
-            </div>
-          `).join('')}
-
-          <div class="add-item-form" data-produto-id="${produto.id}">
-            <div class="segmented" data-toggle-group="dash-${produto.id}">
-              <button type="button" class="seg-btn active" data-tipo="ingrediente">Ingrediente</button>
-              <button type="button" class="seg-btn" data-tipo="produto">Produto (sub-receita)</button>
-            </div>
-            <div class="row dash-ingrediente-fields">
-              <input type="text" class="new-item-nome" list="ingredientesDatalist" placeholder="Nome do ingrediente">
-              <input type="number" step="0.001" min="0" class="new-item-qtd" placeholder="Porção" style="width:90px;">
-              <button class="btn btn-ghost btn-sm btn-add-item">Adicionar</button>
-            </div>
-            <div class="row dash-produto-fields hidden">
-              <select class="new-item-produto-select">
-                <option value="">Selecione um produto…</option>
-                ${produtosDisponiveis.map(p => `<option value="${p.id}">${escapeHtml(p.nome)}</option>`).join('')}
-              </select>
-              <input type="number" step="0.001" min="0" class="new-item-produto-qtd" placeholder="Qtd." style="width:90px;">
-              <button class="btn btn-ghost btn-sm btn-add-produto-item">Adicionar</button>
-            </div>
-          </div>
-
+          ${metaPanel}
+          <div class="variantes-list">${variantesHtml}</div>
+          ${addVarianteForm}
           <div class="receipt-foot">
-            <button class="btn btn-danger btn-sm btn-del-produto" data-id="${produto.id}">Excluir produto</button>
+            <button class="btn btn-danger btn-sm btn-del-produto" data-id="${produto.id}">Excluir produto (todas as variações)</button>
+            <span></span>
           </div>
         </div>
       </div>`;
@@ -1219,44 +1343,80 @@
       });
     });
 
+    wrap.querySelectorAll('[data-toggle-variante]').forEach(head => {
+      head.addEventListener('click', () => {
+        const id = head.dataset.toggleVariante;
+        if(openVariantes.has(id)) openVariantes.delete(id); else openVariantes.add(id);
+        renderDashboard();
+      });
+    });
+
+    wrap.querySelectorAll('.btn-toggle-add-variante').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        wrap.querySelector(`.add-variante-wrap[data-id="${id}"]`).classList.toggle('hidden');
+      });
+    });
+
     wrap.querySelectorAll('[data-toggle-group^="dash-"] .seg-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const form = btn.closest('.add-item-form');
         form.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         form.querySelector('.dash-ingrediente-fields').classList.toggle('hidden', btn.dataset.tipo !== 'ingrediente');
-        form.querySelector('.dash-produto-fields').classList.toggle('hidden', btn.dataset.tipo !== 'produto');
+        form.querySelector('.dash-variante-fields').classList.toggle('hidden', btn.dataset.tipo !== 'variante');
       });
     });
 
-    wrap.querySelectorAll('.preco-venda-input').forEach(input => {
-      input.addEventListener('change', async () => {
-        const id = input.dataset.id;
-        const produto = findProdutoById(id);
-        const precoVenda = parseFloat(input.value) || 0;
-        setSync('syncing');
-        try{
-          await Api.call('updateProduct', { id, nome: produto.nome, precoVenda, rendimento: produto.rendimento, unidadeRendimento: produto.unidadeRendimento, categoria: produto.categoria });
-          await loadAll();
-        }catch(err){ setSync('error'); toast(err.message, true); }
-      });
-    });
-
-    wrap.querySelectorAll('.nome-produto-input, .rendimento-input, .unidade-rendimento-input, .categoria-select').forEach(input => {
+    wrap.querySelectorAll('.nome-produto-input, .categoria-select').forEach(input => {
       input.addEventListener('change', async () => {
         const id = input.dataset.id;
         const produto = findProdutoById(id);
         const card = wrap.querySelector(`.receipt[data-id="${id}"]`);
         const nome = card.querySelector('.nome-produto-input').value.trim() || produto.nome;
-        const rendimento = parseFloat(card.querySelector('.rendimento-input').value) || 1;
-        const unidadeRendimento = card.querySelector('.unidade-rendimento-input').value.trim() || 'unidade';
         const categoria = card.querySelector('.categoria-select').value;
         setSync('syncing');
         try{
-          await Api.call('updateProduct', { id, nome, precoVenda: produto.precoVenda, rendimento, unidadeRendimento, categoria });
+          await Api.call('updateProduct', { id, nome, categoria });
           openReceipts.add(id);
           await loadAll();
           toast('Produto atualizado.');
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    wrap.querySelectorAll('.preco-venda-input').forEach(input => {
+      input.addEventListener('change', async () => {
+        const varianteId = input.dataset.varianteId;
+        const variante = findVarianteById(varianteId);
+        const precoVenda = parseFloat(input.value) || 0;
+        setSync('syncing');
+        try{
+          await Api.call('updateVariante', { id: varianteId, nome: variante.nome, precoVenda, rendimento: variante.rendimento, unidadeRendimento: variante.unidadeRendimento });
+          openReceipts.add(variante.produtoId);
+          openVariantes.add(varianteId);
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    wrap.querySelectorAll('.variante-nome-input, .rendimento-input, .unidade-rendimento-input').forEach(input => {
+      input.addEventListener('change', async () => {
+        const varianteId = input.dataset.varianteId;
+        const variante = findVarianteById(varianteId);
+        const nomeInput = wrap.querySelector(`.variante-nome-input[data-variante-id="${varianteId}"]`);
+        const rendInput = wrap.querySelector(`.rendimento-input[data-variante-id="${varianteId}"]`);
+        const unidInput = wrap.querySelector(`.unidade-rendimento-input[data-variante-id="${varianteId}"]`);
+        const nome = nomeInput ? (nomeInput.value.trim() || 'Padrão') : variante.nome;
+        const rendimento = rendInput ? (parseFloat(rendInput.value) || 1) : variante.rendimento;
+        const unidadeRendimento = unidInput ? (unidInput.value.trim() || 'unidade') : variante.unidadeRendimento;
+        setSync('syncing');
+        try{
+          await Api.call('updateVariante', { id: varianteId, nome, precoVenda: variante.precoVenda, rendimento, unidadeRendimento });
+          openReceipts.add(variante.produtoId);
+          openVariantes.add(varianteId);
+          await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
     });
@@ -1276,11 +1436,11 @@
 
     wrap.querySelectorAll('.btn-del-item').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if(!confirm('Remover este item do produto?')) return;
+        if(!confirm('Remover este item da receita?')) return;
         setSync('syncing');
         try{
           await Api.call('deleteProdutoItem', { id: btn.dataset.itemId });
-          toast('Item removido do produto.');
+          toast('Item removido.');
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
@@ -1289,7 +1449,7 @@
     wrap.querySelectorAll('.btn-add-item').forEach(btn => {
       btn.addEventListener('click', async () => {
         const form = btn.closest('.add-item-form');
-        const produtoId = form.dataset.produtoId;
+        const varianteId = form.dataset.varianteId;
         const nome = form.querySelector('.new-item-nome').value.trim();
         const qtd = parseFloat(form.querySelector('.new-item-qtd').value);
         if(!nome){ toast('Informe o nome do ingrediente.', true); return; }
@@ -1303,25 +1463,67 @@
             itemId = created.id;
             toast('Novo ingrediente criado com preço R$ 0,00 — ajuste na aba Dados.');
           }
-          await Api.call('addProdutoItem', { produtoId, tipoItem: 'ingrediente', itemId, quantidade: qtd });
+          await Api.call('addProdutoItem', { varianteId, tipoItem: 'ingrediente', itemId, quantidade: qtd });
+          const variante = findVarianteById(varianteId);
+          openReceipts.add(variante.produtoId);
+          openVariantes.add(varianteId);
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    wrap.querySelectorAll('.btn-add-variante-item').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const form = btn.closest('.add-item-form');
+        const varianteId = form.dataset.varianteId;
+        const selectedId = form.querySelector('.new-item-variante-select').value;
+        const qtd = parseFloat(form.querySelector('.new-item-variante-qtd').value);
+        if(!selectedId){ toast('Selecione um produto/variação.', true); return; }
+        if(isNaN(qtd) || qtd <= 0){ toast('Informe a quantidade usada.', true); return; }
+        setSync('syncing');
+        try{
+          await Api.call('addProdutoItem', { varianteId, tipoItem: 'variante', itemId: selectedId, quantidade: qtd });
+          const variante = findVarianteById(varianteId);
+          openReceipts.add(variante.produtoId);
+          openVariantes.add(varianteId);
+          await loadAll();
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
+
+    wrap.querySelectorAll('.btn-add-variante').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const form = btn.closest('.add-variante-form');
+        const produtoId = form.dataset.produtoId;
+        const nome = form.querySelector('.nova-var-nome').value.trim();
+        const rendimento = parseFloat(form.querySelector('.nova-var-rendimento').value) || 1;
+        const unidadeRendimento = form.querySelector('.nova-var-unidade').value.trim() || 'unidade';
+        if(!nome){ toast('Dê um nome para a nova variação (ex: 500ml).', true); return; }
+        setSync('syncing');
+        try{
+          await Api.call('addVariante', { produtoId, nome, precoVenda: 0, rendimento, unidadeRendimento, itens: [] });
+          toast('Variação criada — agora adicione os ingredientes dela.');
           openReceipts.add(produtoId);
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
     });
 
-    wrap.querySelectorAll('.btn-add-produto-item').forEach(btn => {
+    wrap.querySelectorAll('.btn-del-variante').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const form = btn.closest('.add-item-form');
-        const produtoId = form.dataset.produtoId;
-        const selectedId = form.querySelector('.new-item-produto-select').value;
-        const qtd = parseFloat(form.querySelector('.new-item-produto-qtd').value);
-        if(!selectedId){ toast('Selecione um produto.', true); return; }
-        if(isNaN(qtd) || qtd <= 0){ toast('Informe a quantidade usada.', true); return; }
+        const id = btn.dataset.id;
+        const variante = findVarianteById(id);
+        const usadaEmOutra = state.itens.some(it => it.tipoItem === 'variante' && it.itemId === id);
+        const msg = usadaEmOutra
+          ? 'Esta variação é usada como sub-receita em outro produto. Excluir vai removê-la de lá também. Continuar?'
+          : 'Excluir esta variação?';
+        if(!confirm(msg)) return;
         setSync('syncing');
         try{
-          await Api.call('addProdutoItem', { produtoId, tipoItem: 'produto', itemId: selectedId, quantidade: qtd });
-          openReceipts.add(produtoId);
+          const produtoId = variante ? variante.produtoId : null;
+          await Api.call('deleteVariante', { id });
+          toast('Variação excluída.');
+          if(produtoId) openReceipts.add(produtoId);
           await loadAll();
         }catch(err){ setSync('error'); toast(err.message, true); }
       });
@@ -1330,10 +1532,11 @@
     wrap.querySelectorAll('.btn-del-produto').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.dataset.id;
-        const usadoEmOutro = state.itens.some(it => it.tipoItem === 'produto' && it.itemId === id);
+        const varianteIds = variantesDoProduto(id).map(v => v.id);
+        const usadoEmOutro = state.itens.some(it => it.tipoItem === 'variante' && varianteIds.includes(it.itemId));
         const msg = usadoEmOutro
-          ? 'Este produto é usado como sub-receita em outro produto. Excluir vai removê-lo de lá também. Continuar?'
-          : 'Excluir este produto e todos os seus itens associados?';
+          ? 'Uma das variações deste produto é usada como sub-receita em outro produto. Excluir vai removê-la de lá também. Continuar?'
+          : 'Excluir este produto e todas as suas variações?';
         if(!confirm(msg)) return;
         setSync('syncing');
         try{
