@@ -153,10 +153,6 @@
   .role-badge{padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700;}
   .role-badge.admin{background:var(--warn-soft); color:#7A4E1B;}
   .role-badge.usuario{background:#EDEBDE; color:var(--ink-soft);}
-  .status-badge{padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700;}
-  .status-badge.active{background:var(--good-soft); color:var(--brand-dark);}
-  .status-badge.pending{background:var(--warn-soft); color:#7A4E1B;}
-  .status-badge.blocked{background:var(--danger-soft); color:var(--danger);}
 
   /* Busca e filtros (Dados e Dashboard) */
   .filter-bar{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px;}
@@ -323,18 +319,12 @@
 </head>
 <body>
 
-  <!-- ===================== LOGIN / CRIAR CONTA ===================== -->
+  <!-- ===================== LOGIN ===================== -->
   <div id="loginScreen" class="login-screen">
     <div class="login-card">
       <h1>CMV<span>.</span></h1>
-      <p class="tag">Custo de Mercadoria Vendida — calculadora conectada ao Supabase</p>
+      <p class="tag">Custo de Mercadoria Vendida — calculadora conectada à sua planilha</p>
       <div id="loginBanner" class="banner hidden"></div>
-
-      <div class="segmented" id="authModeToggle" style="width:100%; margin-bottom:18px;">
-        <button type="button" class="seg-btn active" data-mode="login" style="flex:1;">Entrar</button>
-        <button type="button" class="seg-btn" data-mode="signup" style="flex:1;">Criar conta</button>
-      </div>
-
       <div class="field">
         <label for="loginEmail">E-mail</label>
         <input id="loginEmail" type="email" placeholder="voce@empresa.com.br" autocomplete="username">
@@ -343,39 +333,8 @@
         <label for="loginSenha">Senha</label>
         <input id="loginSenha" type="password" placeholder="••••••••" autocomplete="current-password">
       </div>
-      <div class="field hidden" id="confirmarSenhaField">
-        <label for="loginSenhaConfirmar">Confirmar senha</label>
-        <input id="loginSenhaConfirmar" type="password" placeholder="••••••••">
-      </div>
-
       <button class="btn btn-primary" id="btnLogin">Entrar</button>
-      <button class="btn btn-primary hidden" id="btnSignup">Criar conta</button>
-
-      <p class="hint" id="authHint">Cada pessoa tem seu próprio e-mail e senha. As senhas nunca ficam visíveis para ninguém — nem para os administradores — pois são gerenciadas pelo sistema de login do Supabase.</p>
-    </div>
-  </div>
-
-  <!-- ===================== AGUARDANDO APROVAÇÃO ===================== -->
-  <div id="pendingScreen" class="login-screen hidden">
-    <div class="login-card">
-      <h1>CMV<span>.</span></h1>
-      <p class="tag">Conta criada com sucesso</p>
-      <div class="banner" style="background:var(--brand-soft); color:var(--brand-dark); border-color:var(--brand);">
-        Sua conta está aguardando aprovação de um administrador. Assim que for liberada, você já pode entrar normalmente com o mesmo e-mail e senha.
-      </div>
-      <button class="btn btn-ghost" style="width:100%; margin-top:8px;" id="btnLogoutPending">↪ Sair</button>
-    </div>
-  </div>
-
-  <!-- ===================== ACESSO BLOQUEADO ===================== -->
-  <div id="blockedScreen" class="login-screen hidden">
-    <div class="login-card">
-      <h1>CMV<span>.</span></h1>
-      <p class="tag">Acesso indisponível</p>
-      <div class="banner" style="background:var(--danger-soft); color:var(--danger); border-color:var(--danger);">
-        Seu acesso a este app foi bloqueado. Fale com o administrador se acredita que isso é um engano.
-      </div>
-      <button class="btn btn-ghost" style="width:100%; margin-top:8px;" id="btnLogoutBlocked">↪ Sair</button>
+      <p class="hint">O login é multiusuário: cada pessoa tem seu próprio e-mail e senha, cadastrados por um administrador dentro do app (aba "Usuários"). As senhas ficam com hash na planilha — nunca em texto puro.</p>
     </div>
   </div>
 
@@ -390,6 +349,7 @@
         <button class="nav-btn hidden" data-tab="usuarios" id="navUsuarios">☺ Usuários</button>
       </nav>
       <div class="sidebar-bottom">
+        <button class="nav-btn ghost" id="btnConfig"><span class="icon">⚙</span><span class="btn-label"> Configurar API</span></button>
         <button class="nav-btn ghost" id="btnLogout"><span class="icon">↪</span><span class="btn-label"> Sair</span></button>
       </div>
     </aside>
@@ -399,6 +359,10 @@
         <h2 id="topbarTitle">Cadastro de produto</h2>
         <div id="syncStatus"><span class="dot"></span><span id="syncLabel">Sincronizado</span></div>
       </header>
+
+      <div id="apiBanner" class="banner hidden">
+        Nenhuma planilha conectada ainda. <button class="link" id="btnOpenConfigFromBanner">Configurar URL da API</button>
+      </div>
 
       <!-- ---- TAB: CADASTRO ---- -->
       <section id="tab-cadastro" class="tab active">
@@ -562,12 +526,33 @@
       <section id="tab-usuarios" class="tab">
         <div class="card">
           <h3>Usuários com acesso ao app</h3>
-          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Só administradores veem esta aba. Novas pessoas criam a própria conta na tela de login e aparecem aqui como <strong>pendente</strong> — aprove para liberar o acesso (ex: depois de confirmar o pagamento).</p>
+          <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Só administradores veem esta aba. Cada pessoa deve ter seu próprio e-mail e senha.</p>
           <div style="overflow-x:auto;">
           <table class="data-table">
-            <thead><tr><th>E-mail</th><th>Papel</th><th>Status</th><th class="col-actions">Ações</th></tr></thead>
+            <thead><tr><th>E-mail</th><th>Papel</th><th class="col-actions">Ações</th></tr></thead>
             <tbody id="usuariosTableBody"></tbody>
           </table>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Novo usuário</h3>
+          <div class="grid-3" style="grid-template-columns:2fr 1fr 1fr auto;">
+            <div class="field" style="margin-bottom:0;">
+              <label>E-mail</label>
+              <input id="novoUserEmail" type="email" placeholder="pessoa@empresa.com.br">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Senha</label>
+              <input id="novoUserSenha" type="text" placeholder="mín. 4 caracteres">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Papel</label>
+              <select id="novoUserRole">
+                <option value="usuario">Usuário</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnAddUsuario" style="height:41px;">Adicionar</button>
           </div>
         </div>
       </section>
@@ -583,223 +568,100 @@
 
   <div id="toast" class="toast hidden"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <div id="configModalOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3>Configurar planilha</h3>
+      <p>Cole aqui a URL do Google Apps Script publicado como "Aplicativo da Web". Fica salva apenas neste navegador (tem prioridade sobre a URL padrão do app).</p>
+      <div class="field">
+        <label>URL da API</label>
+        <input id="configApiUrl" type="text" placeholder="https://script.google.com/macros/s/.../exec">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost btn-sm" id="btnCloseConfig">Cancelar</button>
+        <button class="btn btn-primary btn-sm" id="btnSaveConfig">Salvar</button>
+      </div>
+    </div>
+  </div>
+
 <script>
 /* =========================================================================
-   CONFIG — Supabase
+   CONFIG
+   IMPORTANTE — COLOQUE AQUI A URL DO SEU APPS SCRIPT:
+   Troque o valor de DEFAULT_API_URL abaixo pela URL do seu "Aplicativo da
+   Web" (a que termina em /exec). Assim, todo mundo que abrir o link do app
+   já entra direto na tela de login, sem precisar configurar nada.
    ========================================================================= */
-  const SUPABASE_URL = 'https://vouialxwjpgkfeekfslc.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_frKDrjTOwrsDiiDSt0wSQg_pRibNXMP';
-
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycby_mcP3fqI7wcO9gcI2GIRK6elmzcf9jkb8avx-ozeI6YmY8TEFg3Au0FpfpLbPsy1f/exec'; // ex: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const CONFIG = {
+    get API_URL(){ return localStorage.getItem('cmv_api_url') || DEFAULT_API_URL; },
+    set API_URL(v){ localStorage.setItem('cmv_api_url', v); },
     CMV_LOW_MAX: 30,
     CMV_MID_MAX: 45
   };
 
-/* =========================================================================
-   AUTH SERVICE — agora usa o sistema de login nativo do Supabase
-   (auth.signUp / auth.signInWithPassword), mais a tabela "profiles" para
-   saber o papel (usuario/admin) e o status de aprovação (pending/active/
-   blocked) de cada pessoa.
-   ========================================================================= */
-  function traduzErroAuth(error){
-    const msg = (error && error.message) || 'Erro desconhecido.';
-    if(/invalid login credentials/i.test(msg)) return 'E-mail ou senha inválidos.';
-    if(/user already registered/i.test(msg)) return 'Já existe uma conta com esse e-mail.';
-    if(/password should be at least/i.test(msg)) return 'A senha precisa ter pelo menos 6 caracteres.';
-    if(/email not confirmed/i.test(msg)) return 'Confirme seu e-mail antes de entrar (verifique sua caixa de entrada).';
-    if(/rate limit/i.test(msg)) return 'Muitas tentativas seguidas. Aguarde um instante e tente de novo.';
-    return msg;
+  function isApiConfigured(){
+    return /^https:\/\//.test(CONFIG.API_URL);
   }
 
+/* =========================================================================
+   AUTH SERVICE — módulo isolado, ver notas em versões anteriores.
+   ========================================================================= */
   const AuthService = {
-    _profile: null,
-    async signUp(email, senha){
-      const { data, error } = await supabaseClient.auth.signUp({ email, password: senha });
-      if(error) throw new Error(traduzErroAuth(error));
-      return data;
-    },
+    KEY: 'cmv_session',
     async login(email, senha){
-      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
-      if(error) throw new Error(traduzErroAuth(error));
-      await this.loadProfile();
+      const data = await Api.callRaw('login', { email, senha });
+      sessionStorage.setItem(this.KEY, JSON.stringify(data));
       return data;
     },
     async logout(){
-      await supabaseClient.auth.signOut();
-      this._profile = null;
+      const sess = this.getSession();
+      if(sess && sess.token){
+        try{ await Api.callRaw('logout', { token: sess.token }); }catch(e){ /* best-effort */ }
+      }
+      sessionStorage.removeItem(this.KEY);
     },
-    async loadProfile(){
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      if(!user){ this._profile = null; return null; }
-      const { data, error } = await supabaseClient
-        .from('profiles')
-        .select('id, email, role, status')
-        .eq('id', user.id)
-        .single();
-      this._profile = error ? null : data;
-      return this._profile;
-    },
-    async hasSession(){
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      return !!session;
-    },
-    getUser(){ return this._profile; },
-    isLoggedIn(){ return !!this._profile; },
-    isAdmin(){ return !!this._profile && this._profile.role === 'admin'; },
-    isActive(){ return !!this._profile && this._profile.status === 'active'; },
-    isPending(){ return !!this._profile && this._profile.status === 'pending'; },
-    isBlocked(){ return !!this._profile && this._profile.status === 'blocked'; }
+    localLogout(){ sessionStorage.removeItem(this.KEY); },
+    getSession(){ const raw = sessionStorage.getItem(this.KEY); return raw ? JSON.parse(raw) : null; },
+    getUser(){ const s = this.getSession(); return s ? s.user : null; },
+    getToken(){ const s = this.getSession(); return s ? s.token : null; },
+    isLoggedIn(){ return !!this.getSession(); },
+    isAdmin(){ const u = this.getUser(); return !!u && u.role === 'admin'; }
   };
 
 /* =========================================================================
-   API — adaptador para o Supabase (Postgres). Mantém a mesma assinatura
-   Api.call(action, payload) usada em todo o resto do app, então nenhuma
-   outra parte do código precisou mudar — só o que está aqui dentro.
-   Autenticação/permissão são resolvidas pelo Supabase (RLS), então não
-   precisamos mais mandar token manualmente em cada chamada.
+   API
    ========================================================================= */
-  function checarErro_(error){ if(error) throw new Error(error.message); }
-
-  async function getAll_(){
-    const [ing, prod, vars, itens] = await Promise.all([
-      supabaseClient.from('ingredientes').select('id, nome, unidade, preco'),
-      supabaseClient.from('produtos').select('id, nome, categoria'),
-      supabaseClient.from('variantes').select('id, produtoId:produto_id, nome, precoVenda:preco_venda, rendimento, unidadeRendimento:unidade_rendimento'),
-      supabaseClient.from('produto_itens').select('id, varianteId:variante_id, tipoItem:tipo_item, itemId:item_id, quantidade')
-    ]);
-    checarErro_(ing.error); checarErro_(prod.error); checarErro_(vars.error); checarErro_(itens.error);
-    return { ingredientes: ing.data, produtos: prod.data, variantes: vars.data, itens: itens.data };
-  }
-
-  async function addIngredient_(p){
-    const { data, error } = await supabaseClient.from('ingredientes')
-      .insert({ nome: p.nome, unidade: p.unidade, preco: p.preco })
-      .select('id, nome, unidade, preco').single();
-    checarErro_(error);
-    return data;
-  }
-  async function updateIngredient_(p){
-    const { error } = await supabaseClient.from('ingredientes')
-      .update({ nome: p.nome, unidade: p.unidade, preco: p.preco, atualizado_em: new Date().toISOString() })
-      .eq('id', p.id);
-    checarErro_(error);
-    return { id: p.id, nome: p.nome, unidade: p.unidade, preco: p.preco };
-  }
-  async function deleteIngredient_(p){
-    await supabaseClient.from('produto_itens').delete().eq('tipo_item', 'ingrediente').eq('item_id', p.id);
-    const { error } = await supabaseClient.from('ingredientes').delete().eq('id', p.id);
-    checarErro_(error);
-    return { id: p.id };
-  }
-
-  async function addProduct_(p){
-    const categoria = p.categoria === 'sub_receita' ? 'sub_receita' : 'produto';
-    const { data, error } = await supabaseClient.from('produtos')
-      .insert({ nome: p.nome, categoria }).select('id, nome, categoria').single();
-    checarErro_(error);
-    return data;
-  }
-  async function updateProduct_(p){
-    const categoria = p.categoria === 'sub_receita' ? 'sub_receita' : 'produto';
-    const { error } = await supabaseClient.from('produtos').update({ nome: p.nome, categoria }).eq('id', p.id);
-    checarErro_(error);
-    return { id: p.id, nome: p.nome, categoria };
-  }
-  async function deleteProduct_(p){
-    const { data: vs, error: e1 } = await supabaseClient.from('variantes').select('id').eq('produto_id', p.id);
-    checarErro_(e1);
-    const varianteIds = (vs || []).map(v => v.id);
-    if(varianteIds.length){
-      await supabaseClient.from('produto_itens').delete().eq('tipo_item', 'variante').in('item_id', varianteIds);
-    }
-    const { error } = await supabaseClient.from('produtos').delete().eq('id', p.id);
-    checarErro_(error); // variantes e seus itens são removidos em cascata pelo banco
-    return { id: p.id };
-  }
-
-  async function addVariante_(p){
-    const { data: v, error } = await supabaseClient.from('variantes')
-      .insert({ produto_id: p.produtoId, nome: p.nome || 'Padrão', preco_venda: Number(p.precoVenda) || 0, rendimento: Number(p.rendimento) || 1, unidade_rendimento: p.unidadeRendimento || 'unidade' })
-      .select('id, produtoId:produto_id, nome, precoVenda:preco_venda, rendimento, unidadeRendimento:unidade_rendimento').single();
-    checarErro_(error);
-    const itens = p.itens || [];
-    if(itens.length){
-      const rows = itens.map(it => ({ variante_id: v.id, tipo_item: it.tipoItem === 'variante' ? 'variante' : 'ingrediente', item_id: it.itemId, quantidade: Number(it.quantidade) || 0 }));
-      const { error: e2 } = await supabaseClient.from('produto_itens').insert(rows);
-      checarErro_(e2);
-    }
-    return v;
-  }
-  async function updateVariante_(p){
-    const { error } = await supabaseClient.from('variantes').update({
-      nome: p.nome || 'Padrão', preco_venda: Number(p.precoVenda) || 0, rendimento: Number(p.rendimento) || 1, unidade_rendimento: p.unidadeRendimento || 'unidade'
-    }).eq('id', p.id);
-    checarErro_(error);
-    return { id: p.id, nome: p.nome, precoVenda: p.precoVenda, rendimento: p.rendimento, unidadeRendimento: p.unidadeRendimento };
-  }
-  async function deleteVariante_(p){
-    await supabaseClient.from('produto_itens').delete().eq('tipo_item', 'variante').eq('item_id', p.id);
-    const { error } = await supabaseClient.from('variantes').delete().eq('id', p.id);
-    checarErro_(error); // itens próprios dessa variante são removidos em cascata
-    return { id: p.id };
-  }
-
-  async function addProdutoItem_(p){
-    const tipoItem = p.tipoItem === 'variante' ? 'variante' : 'ingrediente';
-    const { data, error } = await supabaseClient.from('produto_itens')
-      .insert({ variante_id: p.varianteId, tipo_item: tipoItem, item_id: p.itemId, quantidade: Number(p.quantidade) || 0 })
-      .select('id, varianteId:variante_id, tipoItem:tipo_item, itemId:item_id, quantidade').single();
-    checarErro_(error);
-    return data;
-  }
-  async function updateProdutoItem_(p){
-    const { error } = await supabaseClient.from('produto_itens').update({ quantidade: Number(p.quantidade) || 0 }).eq('id', p.id);
-    checarErro_(error);
-    return { id: p.id, quantidade: p.quantidade };
-  }
-  async function deleteProdutoItem_(p){
-    const { error } = await supabaseClient.from('produto_itens').delete().eq('id', p.id);
-    checarErro_(error);
-    return { id: p.id };
-  }
-
-  async function listUsuarios_(){
-    const { data, error } = await supabaseClient.from('profiles').select('id, email, role, status, criadoEm:criado_em');
-    checarErro_(error);
-    return data;
-  }
-  async function updateUsuario_(p){
-    const patch = {};
-    if(p.role) patch.role = p.role === 'admin' ? 'admin' : 'usuario';
-    if(p.status) patch.status = p.status;
-    const { error } = await supabaseClient.from('profiles').update(patch).eq('id', p.id);
-    checarErro_(error);
-    return { id: p.id, ...patch };
-  }
-
   const Api = {
-    async call(action, payload = {}){
-      switch(action){
-        case 'getAll': return await getAll_();
-        case 'addIngredient': return await addIngredient_(payload);
-        case 'updateIngredient': return await updateIngredient_(payload);
-        case 'deleteIngredient': return await deleteIngredient_(payload);
-        case 'addProduct': return await addProduct_(payload);
-        case 'updateProduct': return await updateProduct_(payload);
-        case 'deleteProduct': return await deleteProduct_(payload);
-        case 'addVariante': return await addVariante_(payload);
-        case 'updateVariante': return await updateVariante_(payload);
-        case 'deleteVariante': return await deleteVariante_(payload);
-        case 'addProdutoItem': return await addProdutoItem_(payload);
-        case 'updateProdutoItem': return await updateProdutoItem_(payload);
-        case 'deleteProdutoItem': return await deleteProdutoItem_(payload);
-        case 'listUsuarios': return await listUsuarios_();
-        case 'updateUsuario': return await updateUsuario_(payload);
-        default: throw new Error('Ação desconhecida: ' + action);
+    async _post(action, payload){
+      if(!isApiConfigured()){
+        throw new Error('A URL da API ainda não foi configurada neste app (fale com o administrador).');
       }
+      const res = await fetch(CONFIG.API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, payload })
+      });
+      let json;
+      try{ json = await res.json(); }
+      catch(e){ throw new Error('Resposta inválida da API. Confira se a URL está correta e se o app foi implantado como "Qualquer pessoa".'); }
+      if(!json.ok) throw new Error(json.error || 'Erro desconhecido na API.');
+      return json.data;
+    },
+    async call(action, payload = {}){
+      const token = AuthService.getToken();
+      try{
+        return await this._post(action, { ...payload, token });
+      }catch(err){
+        if(/sess(ã|a)o/i.test(err.message)){
+          AuthService.localLogout();
+          showLogin('Sua sessão expirou. Faça login novamente.');
+        }
+        throw err;
+      }
+    },
+    async callRaw(action, payload = {}){
+      return await this._post(action, payload);
     }
   };
 
@@ -851,6 +713,9 @@
     if(status === 'syncing'){ el.classList.add('syncing'); label.textContent = 'Sincronizando…'; }
     else if(status === 'error'){ el.classList.add('error'); label.textContent = 'Erro de sincronização'; }
     else { label.textContent = 'Sincronizado'; }
+  }
+  function updateApiBanner(){
+    document.getElementById('apiBanner').classList.toggle('hidden', isApiConfigured());
   }
   function escapeHtml(str){
     return String(str ?? '').replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -919,6 +784,7 @@
    CARREGAR DADOS
    ========================================================================= */
   async function loadAll(){
+    if(!isApiConfigured()){ updateApiBanner(); return; }
     setSync('syncing');
     try{
       const data = await Api.call('getAll');
@@ -1113,6 +979,8 @@
     const unidadeRendimento = document.getElementById('varUnidadeRendimento').value.trim() || 'unidade';
     if(!nome){ toast('Dê um nome ao produto antes de salvar.', true); return; }
     if(pendingProduct.itens.length === 0){ toast('Adicione ao menos um item à receita.', true); return; }
+    if(!isApiConfigured()){ toast('A URL da API ainda não foi configurada neste app.', true); return; }
+
     setSync('syncing');
     try{
       for(const it of pendingProduct.itens){
@@ -1219,6 +1087,7 @@
     const preco = parseFloat(document.getElementById('novoIngPreco').value);
     if(!nome){ toast('Informe o nome do ingrediente.', true); return; }
     if(isNaN(preco) || preco < 0){ toast('Informe um preço válido.', true); return; }
+    if(!isApiConfigured()){ toast('A URL da API ainda não foi configurada neste app.', true); return; }
     setSync('syncing');
     try{
       await Api.call('addIngredient', { nome, unidade, preco });
@@ -1686,51 +1555,50 @@
     const tbody = document.getElementById('usuariosTableBody');
     const myId = AuthService.getUser()?.id;
     if(state.usuarios.length === 0){
-      tbody.innerHTML = '<tr><td colspan="4" class="empty-note">Nenhum usuário encontrado.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="3" class="empty-note">Nenhum usuário encontrado.</td></tr>';
       return;
     }
-    const STATUS_LABEL = { active: 'Ativo', pending: 'Pendente', blocked: 'Bloqueado' };
     tbody.innerHTML = state.usuarios.map(u => `
       <tr data-id="${u.id}">
         <td>${escapeHtml(u.email)}</td>
         <td><span class="role-badge ${u.role}">${u.role === 'admin' ? 'Administrador' : 'Usuário'}</span></td>
-        <td><span class="status-badge ${u.status}">${STATUS_LABEL[u.status] || u.status}</span></td>
         <td class="col-actions">
-          ${u.status !== 'active' ? `<button class="btn btn-primary btn-sm btn-aprovar-user" data-id="${u.id}">Aprovar</button>` : ''}
-          ${u.status !== 'blocked' ? `<button class="btn btn-danger btn-sm btn-bloquear-user" data-id="${u.id}" ${u.id === myId ? 'disabled title="Você não pode bloquear seu próprio acesso"' : ''}>Bloquear</button>` : ''}
-          ${u.status === 'blocked' ? `<button class="btn btn-ghost btn-sm btn-reativar-user" data-id="${u.id}">Reativar</button>` : ''}
-          ${u.role !== 'admin' ? `<button class="btn btn-ghost btn-sm btn-promover-user" data-id="${u.id}">Tornar admin</button>` : ''}
-          ${u.role === 'admin' && u.id !== myId ? `<button class="btn btn-ghost btn-sm btn-rebaixar-user" data-id="${u.id}">Tornar usuário</button>` : ''}
+          <button class="btn btn-danger btn-sm btn-del-user" data-id="${u.id}" ${u.id === myId ? 'disabled title="Você não pode excluir seu próprio usuário"' : ''}>Excluir</button>
         </td>
       </tr>
     `).join('');
 
-    async function atualizarUsuario(id, patch, msgSucesso){
-      setSync('syncing');
-      try{
-        await Api.call('updateUsuario', { id, ...patch });
-        toast(msgSucesso);
-        await refreshUsuarios();
-        setSync('ok');
-      }catch(err){ setSync('error'); toast(err.message, true); }
-    }
-    tbody.querySelectorAll('.btn-aprovar-user').forEach(btn => btn.addEventListener('click', () =>
-      atualizarUsuario(btn.dataset.id, { status: 'active' }, 'Acesso aprovado.')));
-    tbody.querySelectorAll('.btn-bloquear-user').forEach(btn => btn.addEventListener('click', () => {
-      if(!confirm('Bloquear o acesso deste usuário?')) return;
-      atualizarUsuario(btn.dataset.id, { status: 'blocked' }, 'Acesso bloqueado.');
-    }));
-    tbody.querySelectorAll('.btn-reativar-user').forEach(btn => btn.addEventListener('click', () =>
-      atualizarUsuario(btn.dataset.id, { status: 'active' }, 'Acesso reativado.')));
-    tbody.querySelectorAll('.btn-promover-user').forEach(btn => btn.addEventListener('click', () => {
-      if(!confirm('Tornar este usuário um administrador?')) return;
-      atualizarUsuario(btn.dataset.id, { role: 'admin' }, 'Usuário promovido a administrador.');
-    }));
-    tbody.querySelectorAll('.btn-rebaixar-user').forEach(btn => btn.addEventListener('click', () => {
-      if(!confirm('Remover o papel de administrador deste usuário?')) return;
-      atualizarUsuario(btn.dataset.id, { role: 'usuario' }, 'Usuário rebaixado.');
-    }));
+    tbody.querySelectorAll('.btn-del-user').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm('Excluir este usuário? Ele perderá o acesso ao app imediatamente.')) return;
+        setSync('syncing');
+        try{
+          await Api.call('deleteUsuario', { id: btn.dataset.id });
+          toast('Usuário excluído.');
+          await refreshUsuarios();
+          setSync('ok');
+        }catch(err){ setSync('error'); toast(err.message, true); }
+      });
+    });
   }
+
+  document.getElementById('btnAddUsuario').addEventListener('click', async () => {
+    const email = document.getElementById('novoUserEmail').value.trim();
+    const senha = document.getElementById('novoUserSenha').value;
+    const role = document.getElementById('novoUserRole').value;
+    if(!email){ toast('Informe o e-mail do novo usuário.', true); return; }
+    if(!senha || senha.length < 4){ toast('A senha precisa ter ao menos 4 caracteres.', true); return; }
+    setSync('syncing');
+    try{
+      await Api.call('addUsuario', { email, senha, role });
+      toast('Usuário criado. Já pode fazer login com o e-mail e senha informados.');
+      document.getElementById('novoUserEmail').value = '';
+      document.getElementById('novoUserSenha').value = '';
+      document.getElementById('novoUserRole').value = 'usuario';
+      await refreshUsuarios();
+      setSync('ok');
+    }catch(err){ setSync('error'); toast(err.message, true); }
+  });
 
 /* =========================================================================
    NAVEGAÇÃO / TABS
@@ -1747,63 +1615,26 @@
   });
 
 /* =========================================================================
-   LOGIN / CRIAR CONTA / LOGOUT / ROTEAMENTO POR STATUS
+   LOGIN / LOGOUT
    ========================================================================= */
-  function hideAllAuthScreens(){
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('pendingScreen').classList.add('hidden');
-    document.getElementById('blockedScreen').classList.add('hidden');
+  function showLogin(message){
+    document.getElementById('loginScreen').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
     document.getElementById('tabbarMobile').classList.add('hidden');
-  }
-  function showLogin(message){
-    hideAllAuthScreens();
-    document.getElementById('loginScreen').classList.remove('hidden');
     const banner = document.getElementById('loginBanner');
     if(message){ banner.textContent = message; banner.classList.remove('hidden'); }
     else { banner.classList.add('hidden'); }
   }
-  function showPending(){
-    hideAllAuthScreens();
-    document.getElementById('pendingScreen').classList.remove('hidden');
-  }
-  function showBlocked(){
-    hideAllAuthScreens();
-    document.getElementById('blockedScreen').classList.remove('hidden');
-  }
   function showApp(){
-    hideAllAuthScreens();
+    document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     document.getElementById('tabbarMobile').classList.remove('hidden');
     const isAdmin = AuthService.isAdmin();
     document.getElementById('navUsuarios').classList.toggle('hidden', !isAdmin);
     document.getElementById('navUsuariosMobile').classList.toggle('hidden', !isAdmin);
+    updateApiBanner();
     loadAll();
   }
-  // Decide qual tela mostrar depois de logar (ou ao reabrir o app com sessão
-  // já salva), de acordo com o status de aprovação do perfil.
-  function routeAfterAuth(){
-    if(AuthService.isBlocked()) showBlocked();
-    else if(AuthService.isPending()) showPending();
-    else if(AuthService.isActive()) showApp();
-    else showLogin('Não foi possível carregar seu perfil. Tente novamente.');
-  }
-
-  // Alterna entre os modos "Entrar" e "Criar conta" na tela de login.
-  document.querySelectorAll('#authModeToggle .seg-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#authModeToggle .seg-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const isSignup = btn.dataset.mode === 'signup';
-      document.getElementById('confirmarSenhaField').classList.toggle('hidden', !isSignup);
-      document.getElementById('btnLogin').classList.toggle('hidden', isSignup);
-      document.getElementById('btnSignup').classList.toggle('hidden', !isSignup);
-      document.getElementById('authHint').textContent = isSignup
-        ? 'Depois de criar a conta, ela fica com status "pendente" até um administrador aprovar o acesso.'
-        : 'Cada pessoa tem seu próprio e-mail e senha. As senhas nunca ficam visíveis para ninguém — nem para os administradores.';
-      document.getElementById('loginBanner').classList.add('hidden');
-    });
-  });
 
   document.getElementById('btnLogin').addEventListener('click', async () => {
     const email = document.getElementById('loginEmail').value.trim();
@@ -1815,7 +1646,7 @@
     try{
       await AuthService.login(email, senha);
       banner.classList.add('hidden');
-      routeAfterAuth();
+      showApp();
     }catch(err){
       banner.textContent = err.message;
       banner.classList.remove('hidden');
@@ -1823,65 +1654,39 @@
       btn.disabled = false; btn.textContent = 'Entrar';
     }
   });
-
-  document.getElementById('btnSignup').addEventListener('click', async () => {
-    const email = document.getElementById('loginEmail').value.trim();
-    const senha = document.getElementById('loginSenha').value;
-    const confirmar = document.getElementById('loginSenhaConfirmar').value;
-    const banner = document.getElementById('loginBanner');
-    const btn = document.getElementById('btnSignup');
-    if(!email || !senha){ banner.textContent = 'Preencha e-mail e senha.'; banner.classList.remove('hidden'); return; }
-    if(senha.length < 6){ banner.textContent = 'A senha precisa ter pelo menos 6 caracteres.'; banner.classList.remove('hidden'); return; }
-    if(senha !== confirmar){ banner.textContent = 'As senhas não conferem.'; banner.classList.remove('hidden'); return; }
-    btn.disabled = true; btn.textContent = 'Criando conta…';
-    try{
-      const data = await AuthService.signUp(email, senha);
-      banner.classList.add('hidden');
-      if(data.session){
-        // confirmação de e-mail desativada no projeto: já entra logada
-        await AuthService.loadProfile();
-        routeAfterAuth();
-      } else {
-        // confirmação de e-mail ativada: precisa confirmar antes de logar
-        toast('Conta criada! Verifique seu e-mail para confirmar antes de entrar.');
-        document.querySelector('#authModeToggle .seg-btn[data-mode="login"]').click();
-      }
-    }catch(err){
-      banner.textContent = err.message;
-      banner.classList.remove('hidden');
-    }finally{
-      btn.disabled = false; btn.textContent = 'Criar conta';
-    }
-  });
-
   document.getElementById('loginSenha').addEventListener('keydown', (e) => {
-    if(e.key === 'Enter'){
-      const modoSignup = !document.getElementById('btnSignup').classList.contains('hidden');
-      (modoSignup ? document.getElementById('btnSignup') : document.getElementById('btnLogin')).click();
-    }
+    if(e.key === 'Enter') document.getElementById('btnLogin').click();
   });
-
-  async function fazerLogout(){
+  document.getElementById('btnLogout').addEventListener('click', async () => {
     await AuthService.logout();
     showLogin();
-  }
-  document.getElementById('btnLogout').addEventListener('click', fazerLogout);
-  document.getElementById('btnLogoutPending').addEventListener('click', fazerLogout);
-  document.getElementById('btnLogoutBlocked').addEventListener('click', fazerLogout);
+  });
 
 /* =========================================================================
-   BOOT — verifica se já existe uma sessão do Supabase salva no navegador
+   MODAL DE CONFIGURAÇÃO DA API
+   ========================================================================= */
+  function openConfigModal(){
+    document.getElementById('configApiUrl').value = CONFIG.API_URL;
+    document.getElementById('configModalOverlay').classList.remove('hidden');
+  }
+  function closeConfigModal(){ document.getElementById('configModalOverlay').classList.add('hidden'); }
+  document.getElementById('btnConfig').addEventListener('click', openConfigModal);
+  document.getElementById('btnOpenConfigFromBanner').addEventListener('click', openConfigModal);
+  document.getElementById('btnCloseConfig').addEventListener('click', closeConfigModal);
+  document.getElementById('btnSaveConfig').addEventListener('click', () => {
+    const url = document.getElementById('configApiUrl').value.trim();
+    CONFIG.API_URL = url;
+    updateApiBanner();
+    closeConfigModal();
+    toast('URL da API salva.');
+    if(document.getElementById('app').classList.contains('hidden') === false) loadAll();
+  });
+
+/* =========================================================================
+   BOOT
    ========================================================================= */
   renderPendingList();
-  (async () => {
-    const temSessao = await AuthService.hasSession();
-    if(temSessao){
-      await AuthService.loadProfile();
-      routeAfterAuth();
-    } else {
-      showLogin();
-    }
-  })();
+  if(AuthService.isLoggedIn()) showApp(); else showLogin();
 </script>
 </body>
 </html>
